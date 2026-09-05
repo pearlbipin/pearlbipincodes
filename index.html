@@ -221,11 +221,35 @@ header {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
 }
 
+/* Active Display
+   The information, visualization, and computational structure now
+   form a deliberate vertical sequence. This prevents long project
+   titles from competing with the canvas at desktop widths and gives
+   the visualization the full width of the archive window. */
 .active {
     display: grid;
-    grid-template-columns: minmax(300px, 0.68fr) minmax(420px, 1.12fr) minmax(250px, 0.56fr);
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: clamp(18px, 2vw, 24px);
+    min-width: 0;
 }
+
+.active > * {
+    min-width: 0;
+    width: 100%;
+}
+
+.active > :first-child {
+    padding: clamp(2px, 0.6vw, 8px) 0 clamp(4px, 1vw, 10px);
+}
+
+.project-title {
+    max-width: 1200px;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    hyphens: none;
+}
+
+
 
 /* Status & Indicators */
 .status { display: flex; gap: 10px; align-items: center; color: var(--gold); }
@@ -297,13 +321,32 @@ button, input, select { font: inherit; color: inherit; background: transparent; 
 .viz-wrap {
     border: 1px dashed #51451c;
     background: #000;
-    min-height: clamp(400px, 42vw, 720px);
-    height: 100%;
+    width: 100%;
+    min-height: clamp(420px, 46vw, 760px);
+    height: clamp(420px, 46vw, 760px);
     position: relative;
     overflow: hidden;
     contain: paint;
+    isolation: isolate;
 }
-.viz-wrap canvas { display: block; width: 100%; height: 100%; min-height: 420px; max-width: 100%; contain: strict; }
+
+.viz-wrap canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-width: 100%;
+    contain: strict;
+}
+
+.viz-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border: 1px solid rgba(212, 175, 55, 0.05);
+}
+
 .viz-label { position: absolute; top: 11px; left: 12px; color: #78683e; font-size: 0.59rem; letter-spacing: 2px; text-transform: uppercase; pointer-events: none; }
 .viz-help { position: absolute; right: 12px; bottom: 10px; color: #655b47; font-size: 0.57rem; letter-spacing: 1px; pointer-events: none; }
 
@@ -379,19 +422,19 @@ button, input, select { font: inherit; color: inherit; background: transparent; 
 @keyframes pulse { 50% { opacity: 0.35; } }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
-@media (max-width: 1250px) {
-    .active { grid-template-columns: minmax(300px, 0.8fr) minmax(400px, 1.2fr); }
-    .structure-panel { grid-column: 1 / -1; }
-    .viz-wrap, .viz-wrap canvas { min-height: 470px; }
-}
 @media (max-width: 1080px) {
-    .active { grid-template-columns: 1fr; }
-    .viz-wrap, .viz-wrap canvas { min-height: 430px; }
+    .viz-wrap {
+        min-height: 500px;
+        height: 500px;
+    }
     .archive-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 700px) {
     .index-grid { grid-template-columns: 1fr; }
-    .viz-wrap, .viz-wrap canvas { min-height: 420px; }
+    .viz-wrap {
+        min-height: 430px;
+        height: 430px;
+    }
     .footer { flex-direction: column; text-align: center; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -433,14 +476,14 @@ button, input, select { font: inherit; color: inherit; background: transparent; 
                 <div class="live" id="activeReadout" aria-live="polite"></div>
             </div>
             
-            <div class="viz-wrap">
+            <div class="viz-wrap" role="img" aria-labelledby="vizLabel">
                 <div class="viz-label" id="vizLabel">LIVE COMPUTATIONAL DISPLAY</div>
                 <canvas id="viz" aria-label="Interactive visual representation of the active project"></canvas>
                 <div class="viz-help" id="vizHelp"></div>
             </div>
             
             <div class="structure-panel">
-                <div class="window-title" id="structureTitle" style="color: var(--gold); letter-spacing: 2px; font-size: 0.72rem; margin-bottom: 8px;">COMPUTATIONAL STRUCTURE</div>
+                <h3 class="window-title" id="structureTitle" style="color: var(--gold); letter-spacing: 2px; font-size: 0.72rem; margin-bottom: 8px;">COMPUTATIONAL STRUCTURE</h3>
                 <div class="structure-flow" id="structureFlow"></div>
                 <div class="structure-note" id="structureNote"></div>
             </div>
