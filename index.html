@@ -4,25 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pearl Bipin Codes — Data Science, Machine Learning & Computational Experiments</title>
-<meta name="description"
-      content="A canonical archive of data visualizations, data science, machine learning, deep learning, and artificial intelligence work by Pearl Bipin Pulickal.">
-
+<meta name="description" content="A canonical archive of data visualizations, data science, machine learning, deep learning, artificial intelligence, algorithms, signal processing, and computational experiments by Pearl Bipin Pulickal.">
 <meta name="robots" content="index, follow">
-
+<meta name="googlebot" content="index, follow">
+<meta name="author" content="Pearl Bipin Pulickal">
+<meta name="keywords" content="Pearl Bipin Pulickal, data science, data visualization, machine learning, deep learning, artificial intelligence, Python, algorithms, signal processing, computational experiments">
+<meta name="theme-color" content="#070707">
 <link rel="canonical" href="https://pearlbipincodes.vercel.app/">
 <link rel="icon" type="image/jpeg" href="images/pearlbipin.jpg">
-<meta name="description" content="Pearl Bipin's living archive of data science, machine learning, deep learning, algorithms, signal processing and computational experiments.">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <meta property="og:type" content="website">
-<meta property="og:title"
-      content="Pearl Bipin Codes — Data Science, Machine Learning & AI">
-
-<meta property="og:description"
-      content="A canonical archive of data visualizations, data science, machine learning, deep learning, and artificial intelligence work by Pearl Bipin Pulickal.">
-
-<meta property="og:url"
-      content="https://pearlbipincodes.vercel.app/">
-
+<meta property="og:site_name" content="Pearl Bipin Codes">
+<meta property="og:title" content="Pearl Bipin Codes — Data Science, Machine Learning & Computational Experiments">
+<meta property="og:description" content="A canonical archive of data visualizations, data science, machine learning, deep learning, artificial intelligence, algorithms, signal processing, and computational experiments by Pearl Bipin Pulickal.">
+<meta property="og:url" content="https://pearlbipincodes.vercel.app/">
+<meta property="og:image" content="https://pearlbipincodes.vercel.app/images/pearlbipin.jpg">
+<meta property="og:image:alt" content="Pearl Bipin Codes — Data Science, Machine Learning and Computational Experiments">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Pearl Bipin Codes — Data Science, Machine Learning & Computational Experiments">
+<meta name="twitter:description" content="A canonical archive of data visualizations, data science, machine learning, deep learning, artificial intelligence, algorithms, signal processing, and computational experiments by Pearl Bipin Pulickal.">
+<meta name="twitter:image" content="https://pearlbipincodes.vercel.app/images/pearlbipin.jpg">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://pearlbipincodes.vercel.app/#website","url":"https://pearlbipincodes.vercel.app/","name":"Pearl Bipin Codes","description":"A canonical archive of data visualizations, data science, machine learning, deep learning, artificial intelligence, algorithms, signal processing, and computational experiments by Pearl Bipin Pulickal.","inLanguage":"en"},{"@type":"Person","@id":"https://pearlbipincodes.vercel.app/#person","name":"Pearl Bipin Pulickal","url":"https://pearlbipincodes.vercel.app/"}]}
+</script>
+
 <style>
 /* =========================================
    VARIABLES & THEME
@@ -56,6 +61,13 @@
 html {
     scroll-behavior: smooth;
 }
+
+.skip-link {
+    position: absolute; left: 12px; top: -60px; z-index: 1000;
+    background: var(--gold); color: #070707; padding: 10px 14px;
+    font-weight: bold; text-decoration: none;
+}
+.skip-link:focus { top: 12px; }
 
 body {
     background-color: var(--bg);
@@ -388,6 +400,7 @@ button, input, select { font: inherit; color: inherit; background: transparent; 
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="topbar">
     <div class="topbar-in">
         <div class="status"><span class="dot"></span> CODES ARCHIVE / ACTIVE DISPLAY</div>
@@ -395,7 +408,7 @@ button, input, select { font: inherit; color: inherit; background: transparent; 
     </div>
 </div>
 
-<div class="wrap">
+<main class="wrap" id="main-content">
     <header>
         <div class="eyebrow">PEARL BIPIN PULICKAL</div>
         <h1>Pearl Bipin Codes</h1>
@@ -403,12 +416,12 @@ button, input, select { font: inherit; color: inherit; background: transparent; 
         <div class="subtitle">Data science · machine learning · deep learning · algorithms · signal processing. A living computational archive: each experiment is presented as an idea, a visual process, and reusable Python.</div>
     </header>
 
-    <section aria-label="Active Display">
-        <div class="section-title">Active Display</div>
+    <section aria-labelledby="active-display-heading">
+        <h2 class="section-title" id="active-display-heading">Active Display</h2>
         <div class="window active">
             <div>
                 <div class="kicker" id="activeCat"></div>
-                <div class="project-title" id="activeTitle"></div>
+                <h2 class="project-title" id="activeTitle"></h2>
                 <div class="summary" id="activeSummary"></div>
                 <div class="meta" id="activeMeta"></div>
                 <div class="control-row">
@@ -434,17 +447,17 @@ button, input, select { font: inherit; color: inherit; background: transparent; 
         </div>
     </section>
 
-    <section class="window index" aria-label="Archive Index">
-        <div class="window-title" style="color: var(--gold); letter-spacing: 2px; font-size: 0.72rem; margin-bottom: 16px;">Archive Index · 20 Works</div>
+    <section class="window index" aria-labelledby="archive-index-heading">
+        <h2 class="window-title" id="archive-index-heading" style="color: var(--gold); letter-spacing: 2px; font-size: 0.72rem; margin-bottom: 16px;">Archive Index · 20 Works</h2>
         <div class="index-grid" id="index"></div>
     </section>
 
-    <section class="archive" aria-label="All Experiments Cards">
-        <div class="section-title">All Experiments</div>
+    <section class="archive" aria-labelledby="all-experiments-heading">
+        <h2 class="section-title" id="all-experiments-heading">All Experiments</h2>
         <div class="archive-grid" id="cards"></div>
     </section>
 
-    <section class="window code-window" aria-label="Source Code">
+    <section class="window code-window" aria-labelledby="codeTitle">
         <div class="code-head">
             <div>
                 <div class="code-title" id="codeTitle">FULL REUSABLE PYTHON IMPLEMENTATION</div>
@@ -459,7 +472,7 @@ button, input, select { font: inherit; color: inherit; background: transparent; 
         <div>PEARL BIPIN CODES · ONE PAGE · SELF-CONTAINED ARCHIVE</div>
         <div id="frameInfo">FRAME 000000 · 60 FPS TARGET</div>
     </footer>
-</div>
+</main>
 
 <script>
 // =========================================
@@ -2579,6 +2592,35 @@ function draw() {
     ctx.restore();
 }
 
+
+// Structured data generated from the same 20-project source used by the interface.
+function injectProjectStructuredData() {
+    const itemList = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "@id": "https://pearlbipincodes.vercel.app/#projects",
+        "name": "Pearl Bipin Codes — Computational Projects",
+        "description": "Twenty self-contained data science, machine learning, deep learning, algorithmic, signal-processing and computational experiments by Pearl Bipin Pulickal.",
+        "numberOfItems": projects.length,
+        "itemListElement": projects.map((p, i) => ({
+            "@type": "ListItem",
+            "position": i + 1,
+            "item": {
+                "@type": "CreativeWork",
+                "name": p.title,
+                "description": p.summary,
+                "keywords": [p.category].concat(p.tags || []).join(", "),
+                "author": {"@type": "Person", "name": "Pearl Bipin Pulickal"},
+                "url": "https://pearlbipincodes.vercel.app/#work-" + p.id
+            }
+        }))
+    };
+    const node = document.createElement("script");
+    node.type = "application/ld+json";
+    node.textContent = JSON.stringify(itemList);
+    document.head.appendChild(node);
+}
+
 // =========================================
 // APPLICATION LOGIC
 // =========================================
@@ -2658,13 +2700,12 @@ function buildActiveIndex() {
 function build() {
     projects.forEach((p, i) => {
         // Index Item
-        const it = document.createElement("div");
+        const it = document.createElement("button");
+        it.type = "button";
         it.className = "index-item";
-        it.setAttribute("tabindex", "0");
         it.setAttribute("aria-label", `View project ${p.id}: ${p.title}`);
         it.innerHTML = `<div class="num">${p.id}</div><div><div class="item-title">${p.title}</div><div class="item-cat">${p.category}</div></div>`;
         it.addEventListener("click", () => openProject(i));
-        it.addEventListener("keydown", e => { if (e.key === 'Enter') openProject(i); });
         DOM.index.appendChild(it);
         
         // Card Item
@@ -2737,6 +2778,7 @@ setInterval(() => {
     updateDOMText(DOM.clock, new Date().toLocaleTimeString());
 }, 1000);
 
+injectProjectStructuredData();
 build();
 update();
 buildActiveIndex();
