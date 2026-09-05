@@ -1,0 +1,2728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pearl Bipin Codes — Data Science, Machine Learning & Computational Experiments</title>
+<meta name="description" content="Pearl Bipin's living archive of data science, machine learning, deep learning, algorithms, signal processing and computational experiments.">
+<style>
+/* =========================================
+   VARIABLES & THEME
+   ========================================= */
+:root {
+    --bg: #070707;
+    --panel: #101010;
+    --panel2: #0b0b0b;
+    --gold: #D4AF37;
+    --gold2: #f0c94d;
+    --goldDim: #8a7322;
+    --text: #e6e2d8;
+    --muted: #8b8983;
+    --line: #2b2b2b;
+    --max: 1500px;
+    
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================
+   RESET & BASE
+   ========================================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: "Courier New", Courier, monospace;
+    padding: clamp(20px, 3vw, 28px) clamp(10px, 2vw, 18px) clamp(50px, 8vh, 70px);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Background Effects */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background: 
+        linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.010) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,.86), transparent 88%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.86), transparent 88%);
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -10vh;
+    height: 16vh;
+    pointer-events: none;
+    z-index: 50;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,.024), transparent);
+    animation: scan 8s linear infinite;
+    opacity: 0.42;
+}
+
+/* =========================================
+   TYPOGRAPHY
+   ========================================= */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+h1 {
+    margin: 8px 0 0;
+    color: var(--gold);
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 600;
+    font-size: clamp(2rem, 5vw, 6.2rem);
+    line-height: 1.02;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.eyebrow {
+    font-size: clamp(0.65rem, 1vw, 0.74rem);
+    letter-spacing: 4px;
+    color: var(--goldDim);
+    text-transform: uppercase;
+}
+
+.subtitle {
+    margin: 0;
+    color: #bdbab1;
+    font-size: clamp(0.8rem, 1.2vw, 0.87rem);
+    line-height: 1.8;
+    max-width: 950px;
+}
+
+.section-title {
+    color: var(--gold);
+    text-align: center;
+    border-bottom: 2px dashed var(--goldDim);
+    padding-bottom: 11px;
+    margin: 0 0 24px;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    font-size: 1rem;
+}
+
+.project-title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 600;
+    font-size: clamp(1.8rem, 4vw, 4rem);
+    line-height: 1.03;
+    color: #eee6d7;
+    margin: 10px 0 12px;
+}
+
+/* =========================================
+   LAYOUT
+   ========================================= */
+.wrap {
+    width: min(var(--max), 100%);
+    margin: auto;
+}
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    margin: calc(-1 * clamp(20px, 3vw, 28px)) calc(-1 * clamp(10px, 2vw, 18px)) 24px;
+    padding: 0 clamp(10px, 2vw, 18px);
+    background: rgba(7, 7, 7, 0.93);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+}
+
+.topbar-in {
+    width: min(var(--max), 100%);
+    margin: auto;
+    min-height: 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+header {
+    border: 1px solid var(--goldDim);
+    border-left: 5px solid var(--gold);
+    background: linear-gradient(135deg, #101010, #090909);
+    padding: clamp(20px, 4vw, 30px);
+    margin-bottom: clamp(20px, 3vw, 28px);
+    box-shadow: 0 10px 35px rgba(212, 175, 55, 0.05);
+}
+
+.header-rule {
+    width: min(650px, 100%);
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin: 24px 0;
+}
+
+/* =========================================
+   COMPONENTS
+   ========================================= */
+/* Window Containers */
+.window {
+    background: var(--panel);
+    border: 1px solid var(--goldDim);
+    border-left: 4px solid var(--gold);
+    padding: clamp(15px, 2vw, 20px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
+}
+
+.active {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.68fr) minmax(420px, 1.12fr) minmax(250px, 0.56fr);
+    gap: 20px;
+}
+
+/* Status & Indicators */
+.status { display: flex; gap: 10px; align-items: center; color: var(--gold); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); animation: pulse 2.2s ease-in-out infinite; }
+.clock { color: var(--muted); }
+
+/* Badges */
+.meta { margin-top: 16px; display: flex; gap: 7px; flex-wrap: wrap; }
+.badge {
+    border: 1px solid #493a17;
+    padding: 5px 8px;
+    color: #c6b88f;
+    font-size: 0.58rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: #080808;
+    border-radius: var(--radius-sm);
+}
+.badge.gold { border-color: var(--goldDim); color: var(--gold2); }
+
+/* Buttons & Controls */
+button, input, select { font: inherit; color: inherit; background: transparent; border: none; }
+.control-row { margin-top: 18px; display: flex; gap: 8px; flex-wrap: wrap; }
+.control {
+    border: 1px solid var(--goldDim);
+    background: #0a0a0a;
+    padding: 9px 12px;
+    cursor: pointer;
+    font-size: 0.64rem;
+    letter-spacing: 1px;
+    transition: var(--transition);
+    border-radius: var(--radius-sm);
+}
+.control:hover, .control:focus-visible { border-color: var(--gold); color: var(--gold2); transform: translateY(-1px); outline: none; }
+.control.primary { background: var(--gold); color: #0d0b07; border-color: var(--gold); }
+.control.primary:hover, .control.primary:focus-visible { background: var(--gold2); }
+
+/* Structure Panel */
+.structure-panel { border: 1px dashed #51451c; background: #090909; padding: 16px; min-width: 0; overflow: hidden; }
+.structure-flow { display: flex; flex-direction: column; margin-top: 14px; }
+.structure-step {
+    position: relative;
+    border-left: 1px solid #5d4b1b;
+    padding: 9px 10px;
+    color: #b9ad90;
+    font-size: 0.61rem;
+    letter-spacing: 1px;
+    line-height: 1.4;
+}
+.structure-step::before {
+    content: "";
+    position: absolute;
+    left: -4px;
+    top: 13px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #D4AF37;
+}
+.structure-arrow { height: 12px; border-left: 1px dotted #6c5721; }
+.structure-note { margin-top: 17px; color: #756d60; font-size: 0.60rem; line-height: 1.7; border-top: 1px solid #211b10; padding-top: 13px; }
+
+/* Readouts */
+.live { margin-top: 18px; border: 1px dashed #51451c; padding: 11px; color: #9c937f; font-size: 0.64rem; line-height: 1.75; }
+.live b { color: var(--gold2); }
+.summary { font-size: 0.82rem; color: #d0cdc4; line-height: 1.9; }
+
+/* Canvas Visualization */
+.viz-wrap {
+    border: 1px dashed #51451c;
+    background: #000;
+    min-height: clamp(400px, 42vw, 720px);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    contain: paint;
+}
+.viz-wrap canvas { display: block; width: 100%; height: 100%; min-height: 420px; max-width: 100%; contain: strict; }
+.viz-label { position: absolute; top: 11px; left: 12px; color: #78683e; font-size: 0.59rem; letter-spacing: 2px; text-transform: uppercase; pointer-events: none; }
+.viz-help { position: absolute; right: 12px; bottom: 10px; color: #655b47; font-size: 0.57rem; letter-spacing: 1px; pointer-events: none; }
+
+/* Index Grid */
+.index { margin-top: 24px; }
+.index-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 20px; }
+.index-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 6px;
+    border-bottom: 1px solid #1d1d1d;
+    cursor: pointer;
+    transition: var(--transition);
+    outline: none;
+}
+.index-item:hover, .index-item:focus-visible { color: var(--gold2); background: #0b0b0b; border-bottom-color: var(--goldDim); }
+.num { color: var(--goldDim); min-width: 26px; }
+.item-title { font-size: 0.72rem; line-height: 1.55; }
+.item-cat { font-size: 0.56rem; color: #6e695f; margin-top: 3px; }
+
+/* Cards Archive */
+.archive { margin-top: 24px; }
+.archive-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+.card {
+    background: linear-gradient(135deg, #0f0f0f, #0a0a0a);
+    border: 1px solid #3d3218;
+    padding: 18px;
+    min-height: 260px;
+    position: relative;
+    cursor: pointer;
+    transition: var(--transition);
+    animation: rise 0.5s ease both;
+    display: flex;
+    flex-direction: column;
+    outline: none;
+}
+.card:hover, .card:focus-visible { transform: translateY(-3px); border-color: var(--gold); box-shadow: 0 14px 40px rgba(0,0,0,.35); }
+.card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(var(--gold), transparent); }
+.card .top { display: flex; justify-content: space-between; gap: 10px; }
+.card .id { color: var(--gold); font-size: 0.62rem; letter-spacing: 2px; }
+.card .cat { color: var(--goldDim); font-size: 0.56rem; letter-spacing: 1px; text-transform: uppercase; text-align: right; }
+.card h3 { margin-top: 12px; font: 600 1.55rem/1.06 Georgia, "Times New Roman", serif; color: #ece6d9; }
+.card p { color: #9f9b91; font-size: 0.70rem; line-height: 1.75; margin: 12px 0; }
+.card .meta { margin-top: auto; }
+
+/* Code Window */
+.code-window { margin-top: 24px; }
+.code-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.code-title { font-size: 0.72rem; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
+.copy { border: 1px solid var(--goldDim); background: transparent; color: var(--gold2); padding: 7px 10px; cursor: pointer; font-size: 0.60rem; transition: var(--transition); border-radius: var(--radius-sm); }
+.copy:hover, .copy:focus-visible { background: #15120b; border-color: var(--gold); outline: none; }
+.adapt { margin-top: 9px; color: #918a7c; font-size: 0.67rem; line-height: 1.7; }
+.code { margin: 14px 0 0; background: #050505; border: 1px solid #28200f; overflow: auto; padding: 18px; color: #d9d4c8; font-size: 0.68rem; line-height: 1.6; tab-size: 4; max-height: 680px; max-width: 100%; white-space: pre; border-radius: var(--radius-sm); }
+
+/* Footer */
+.footer {
+    margin-top: 26px;
+    padding: 18px 0;
+    border-top: 1px solid #222;
+    color: #666;
+    font-size: 0.60rem;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+/* =========================================
+   ANIMATIONS & MEDIA QUERIES
+   ========================================= */
+@keyframes scan { to { transform: translateY(760vh); } }
+@keyframes pulse { 50% { opacity: 0.35; } }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 1250px) {
+    .active { grid-template-columns: minmax(300px, 0.8fr) minmax(400px, 1.2fr); }
+    .structure-panel { grid-column: 1 / -1; }
+    .viz-wrap, .viz-wrap canvas { min-height: 470px; }
+}
+@media (max-width: 1080px) {
+    .active { grid-template-columns: 1fr; }
+    .viz-wrap, .viz-wrap canvas { min-height: 430px; }
+    .archive-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+    .index-grid { grid-template-columns: 1fr; }
+    .viz-wrap, .viz-wrap canvas { min-height: 420px; }
+    .footer { flex-direction: column; text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+    <div class="topbar-in">
+        <div class="status"><span class="dot"></span> CODES ARCHIVE / ACTIVE DISPLAY</div>
+        <div class="clock" id="clock" aria-live="polite">--:--:--</div>
+    </div>
+</div>
+
+<div class="wrap">
+    <header>
+        <div class="eyebrow">PEARL BIPIN PULICKAL</div>
+        <h1>Pearl Bipin Codes</h1>
+        <div class="header-rule"></div>
+        <div class="subtitle">Data science · machine learning · deep learning · algorithms · signal processing. A living computational archive: each experiment is presented as an idea, a visual process, and reusable Python.</div>
+    </header>
+
+    <section aria-label="Active Display">
+        <div class="section-title">Active Display</div>
+        <div class="window active">
+            <div>
+                <div class="kicker" id="activeCat"></div>
+                <div class="project-title" id="activeTitle"></div>
+                <div class="summary" id="activeSummary"></div>
+                <div class="meta" id="activeMeta"></div>
+                <div class="control-row">
+                    <button class="control primary" id="prev" aria-label="Previous Project">← PREVIOUS</button>
+                    <button class="control primary" id="next" aria-label="Next Project">NEXT →</button>
+                    <button class="control" id="pause" aria-label="Pause Motion">PAUSE MOTION</button>
+                    <button class="control" id="random" aria-label="Random Project">RANDOM WORK</button>
+                </div>
+                <div class="live" id="activeReadout" aria-live="polite"></div>
+            </div>
+            
+            <div class="viz-wrap">
+                <div class="viz-label" id="vizLabel">LIVE COMPUTATIONAL DISPLAY</div>
+                <canvas id="viz" aria-label="Interactive visual representation of the active project"></canvas>
+                <div class="viz-help" id="vizHelp"></div>
+            </div>
+            
+            <div class="structure-panel">
+                <div class="window-title" id="structureTitle" style="color: var(--gold); letter-spacing: 2px; font-size: 0.72rem; margin-bottom: 8px;">COMPUTATIONAL STRUCTURE</div>
+                <div class="structure-flow" id="structureFlow"></div>
+                <div class="structure-note" id="structureNote"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="window index" aria-label="Archive Index">
+        <div class="window-title" style="color: var(--gold); letter-spacing: 2px; font-size: 0.72rem; margin-bottom: 16px;">Archive Index · 20 Works</div>
+        <div class="index-grid" id="index"></div>
+    </section>
+
+    <section class="archive" aria-label="All Experiments Cards">
+        <div class="section-title">All Experiments</div>
+        <div class="archive-grid" id="cards"></div>
+    </section>
+
+    <section class="window code-window" aria-label="Source Code">
+        <div class="code-head">
+            <div>
+                <div class="code-title" id="codeTitle">FULL REUSABLE PYTHON IMPLEMENTATION</div>
+                <div class="adapt" id="adapt"></div>
+            </div>
+            <button class="copy" id="copy" aria-label="Copy Python Code">COPY PYTHON</button>
+        </div>
+        <pre class="code"><code id="code"></code></pre>
+    </section>
+
+    <footer class="footer">
+        <div>PEARL BIPIN CODES · ONE PAGE · SELF-CONTAINED ARCHIVE</div>
+        <div id="frameInfo">FRAME 000000 · 60 FPS TARGET</div>
+    </footer>
+</div>
+
+<script>
+// =========================================
+// DATA / JSON PAYLOAD
+// =========================================
+const projects = [
+    {
+        "id": "01", "title": "TIC-TAC-TOE Q-LEARNING", "category": "REINFORCEMENT LEARNING", "summary": "A tabular reinforcement-learning agent learns a compact game policy from repeated state → action → reward transitions. The portfolio implementation uses an explicit Bellman update rather than learning only from the terminal reward.", "metric": "Q-TABLE · TABULAR RL", "visual": "rl", "tags": ["Q-LEARNING", "RL", "GAME"], 
+        "code": `import random
+from collections import defaultdict
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Sequence, Tuple
+
+State = Tuple[str, ...]
+Action = int
+
+WIN_LINES = (
+    (0, 1, 2), (3, 4, 5), (6, 7, 8),
+    (0, 3, 6), (1, 4, 7), (2, 5, 8),
+    (0, 4, 8), (2, 4, 6),
+)
+
+@dataclass
+class Step:
+    state: State
+    action: Action
+    next_state: State
+    reward: float
+    done: bool
+
+class TicTacToe:
+    def __init__(self):
+        self.board = [' '] * 9
+        self.player = 'X'
+
+    def state(self) -> State:
+        return tuple(self.board)
+
+    def legal_moves(self) -> List[Action]:
+        return [i for i, value in enumerate(self.board) if value == ' ']
+
+    def winner(self) -> Optional[str]:
+        for a, b, c in WIN_LINES:
+            if self.board[a] != ' ' and self.board[a] == self.board[b] == self.board[c]:
+                return self.board[a]
+        return None
+
+    def step(self, action: Action):
+        if action not in self.legal_moves():
+            raise ValueError('Illegal move')
+        player = self.player
+        self.board[action] = player
+        winner = self.winner()
+        done = winner is not None or not self.legal_moves()
+        if winner == player:
+            reward = 1.0
+        elif winner is not None:
+            reward = -1.0
+        else:
+            reward = 0.0
+        self.player = 'O' if player == 'X' else 'X'
+        return self.state(), reward, done, winner
+
+class QLearningAgent:
+    """Tabular Q-learning agent for zero-sum alternating play."""
+    def __init__(self, alpha=0.15, gamma=0.95, epsilon=0.25, seed=42):
+        self.alpha = alpha
+        self.gamma = gamma
+        self.epsilon = epsilon
+        self.rng = random.Random(seed)
+        self.q: Dict[Tuple[State, Action], float] = defaultdict(float)
+
+    def value(self, state, action):
+        return self.q[(state, action)]
+
+    def choose(self, state: State, legal: Sequence[Action], greedy=False) -> Action:
+        if not legal:
+            raise ValueError('No legal actions')
+        if not greedy and self.rng.random() < self.epsilon:
+            return self.rng.choice(list(legal))
+        values = [self.value(state, a) for a in legal]
+        best = max(values)
+        choices = [a for a, v in zip(legal, values) if abs(v - best) < 1e-12]
+        return self.rng.choice(choices)
+
+    def update(self, state, action, reward, next_state, next_legal, done, opponent):
+        old = self.value(state, action)
+        if done or not next_legal:
+            target = reward
+        else:
+            # The next state's value is owned by the opponent. In a zero-sum
+            # game, the current player's continuation value is the negative of
+            # the opponent's best achievable value.
+            next_best_for_opponent = max(opponent.value(next_state, a) for a in next_legal)
+            target = reward - self.gamma * next_best_for_opponent
+        self.q[(state, action)] = old + self.alpha * (target - old)
+        return target
+
+def train(episodes=20000, seed=42):
+    agent_x = QLearningAgent(seed=seed)
+    agent_o = QLearningAgent(seed=seed + 1)
+    game_rng = random.Random(seed + 2)
+
+    for episode in range(episodes):
+        # Slowly anneal exploration while keeping a small amount of exploration.
+        epsilon = max(0.02, 0.30 * (1 - episode / episodes))
+        agent_x.epsilon = epsilon
+        agent_o.epsilon = epsilon
+
+        game = TicTacToe()
+        while True:
+            state = game.state()
+            legal = game.legal_moves()
+            current = agent_x if game.player == 'X' else agent_o
+            opponent = agent_o if game.player == 'X' else agent_x
+            action = current.choose(state, legal)
+            next_state, reward, done, _ = game.step(action)
+            next_legal = game.legal_moves()
+            current.update(state, action, reward, next_state, next_legal, done, opponent)
+            if done:
+                break
+
+    return agent_x, agent_o
+
+def play(agent_x, agent_o, moves=None):
+    """Greedy self-play; optionally apply a fixed sequence of human actions."""
+    game = TicTacToe()
+    history = []
+    while True:
+        legal = game.legal_moves()
+        if not legal:
+            break
+        current = agent_x if game.player == 'X' else agent_o
+        action = (moves[len(history)] if moves is not None and len(history) < len(moves)
+                  else current.choose(game.state(), legal, greedy=True))
+        next_state, reward, done, winner = game.step(action)
+        history.append((game.player, action, next_state, reward))
+        if done:
+            return game, history, winner
+    return game, history, None
+
+if __name__ == '__main__':
+    x_agent, o_agent = train()
+    game, history, winner = play(x_agent, o_agent)
+    print('Learned state-action pairs:', len(x_agent.q) + len(o_agent.q))
+    print('Training self-play winner:', winner or 'draw')`,
+        "adapt": "Change the board representation or reward function to experiment with larger state spaces, different exploration schedules, or alternative games.", "structure_title": "LEARNING LOOP", "structure_steps": ["STATE", "ACTION", "TRANSITION", "REWARD", "Q-UPDATE", "NEXT TURN"]
+    },
+    {
+        "id": "02", "title": "MICROGRID ENERGY OPTIMIZATION", "category": "OPTIMIZATION / OPERATIONS RESEARCH", "summary": "A mixed-integer optimization model schedules grid exchange, renewable generation, and battery charging/discharging across a time horizon while respecting energy balance and battery constraints.", "metric": "MILP · CBC · OPTIMAL SCHEDULE", "visual": "microgrid", "tags": ["PYOMO", "MILP", "ENERGY"], 
+        "code": `import numpy as np
+import pyomo.environ as pe
+
+# 24-hour demonstration profile. Replace these arrays with your own forecasts.
+LOAD = np.array([46, 44, 43, 42, 41, 43, 48, 55, 64, 70, 74, 78,
+                 80, 82, 84, 86, 89, 92, 88, 76, 66, 57, 51, 48], dtype=float)
+SOLAR = np.array([0, 0, 0, 0, 0, 2, 10, 22, 39, 57, 72, 82,
+                  86, 82, 70, 53, 32, 14, 3, 0, 0, 0, 0, 0], dtype=float)
+WIND = np.array([18, 20, 19, 18, 21, 22, 23, 25, 27, 30, 29, 27,
+                 25, 24, 26, 30, 33, 35, 32, 29, 26, 24, 23, 21], dtype=float)
+BUY_PRICE = np.array([0.08]*6 + [0.12,0.14,0.16,0.18,0.20,0.22,
+                               0.24,0.24,0.22,0.20,0.28,0.32,0.30,0.22,0.15,0.11,0.09])
+SELL_PRICE = np.minimum(BUY_PRICE * 0.85, BUY_PRICE)
+
+T = range(24)
+
+def build_model(load=LOAD, solar=SOLAR, wind=WIND):
+    m = pe.ConcreteModel('MicrogridOptimization')
+    m.T = pe.RangeSet(0, 23)
+
+    # Storage / interface parameters.
+    m.E_CAP = pe.Param(initialize=100.0)
+    m.SOC0 = pe.Param(initialize=0.50)
+    m.SOC_MIN = pe.Param(initialize=0.20)
+    m.SOC_MAX = pe.Param(initialize=0.90)
+    m.P_CH_MAX = pe.Param(initialize=25.0)
+    m.P_DIS_MAX = pe.Param(initialize=25.0)
+    m.P_GRID_MAX = pe.Param(initialize=100.0)
+    m.ETA_CH = pe.Param(initialize=0.95)
+    m.ETA_DIS = pe.Param(initialize=0.95)
+    m.DEGRADATION = pe.Param(initialize=0.01)
+
+    m.load = pe.Param(m.T, initialize={t: float(load[t]) for t in T})
+    m.solar = pe.Param(m.T, initialize={t: float(solar[t]) for t in T})
+    m.wind = pe.Param(m.T, initialize={t: float(wind[t]) for t in T})
+    m.buy_price = pe.Param(m.T, initialize={t: float(BUY_PRICE[t]) for t in T})
+    m.sell_price = pe.Param(m.T, initialize={t: float(SELL_PRICE[t]) for t in T})
+
+    # Decisions.
+    m.grid_buy = pe.Var(m.T, domain=pe.NonNegativeReals)
+    m.grid_sell = pe.Var(m.T, domain=pe.NonNegativeReals)
+    m.charge = pe.Var(m.T, domain=pe.NonNegativeReals)
+    m.discharge = pe.Var(m.T, domain=pe.NonNegativeReals)
+    m.soc = pe.Var(m.T, bounds=(0.20, 0.90))
+    m.buy_mode = pe.Var(m.T, domain=pe.Binary)
+    m.sell_mode = pe.Var(m.T, domain=pe.Binary)
+    m.charge_mode = pe.Var(m.T, domain=pe.Binary)
+    m.discharge_mode = pe.Var(m.T, domain=pe.Binary)
+
+    def objective(m):
+        return sum(
+            m.buy_price[t] * m.grid_buy[t]
+            - m.sell_price[t] * m.grid_sell[t]
+            + m.DEGRADATION * (m.charge[t] + m.discharge[t])
+            for t in m.T
+        )
+    m.objective = pe.Objective(rule=objective, sense=pe.minimize)
+
+    # Supply must equal demand at every hour.
+    m.balance = pe.Constraint(
+        m.T,
+        rule=lambda m, t: m.solar[t] + m.wind[t] + m.grid_buy[t] + m.discharge[t]
+                           == m.load[t] + m.grid_sell[t] + m.charge[t]
+    )
+
+    # Battery state transition with round-trip efficiencies.
+    def soc_rule(m, t):
+        previous = m.SOC0 if t == 0 else m.soc[t - 1]
+        return m.soc[t] == previous + (
+            m.ETA_CH * m.charge[t] - m.discharge[t] / m.ETA_DIS
+        ) / m.E_CAP
+    m.soc_transition = pe.Constraint(m.T, rule=soc_rule)
+
+    # Explicit mutually exclusive operating modes.
+    m.charge_limit = pe.Constraint(
+        m.T, rule=lambda m, t: m.charge[t] <= m.P_CH_MAX * m.charge_mode[t]
+    )
+    m.discharge_limit = pe.Constraint(
+        m.T, rule=lambda m, t: m.discharge[t] <= m.P_DIS_MAX * m.discharge_mode[t]
+    )
+    m.storage_mode = pe.Constraint(
+        m.T, rule=lambda m, t: m.charge_mode[t] + m.discharge_mode[t] <= 1
+    )
+
+    # Explicitly prevent simultaneous grid import and export.
+    m.buy_limit = pe.Constraint(
+        m.T, rule=lambda m, t: m.grid_buy[t] <= m.P_GRID_MAX * m.buy_mode[t]
+    )
+    m.sell_limit = pe.Constraint(
+        m.T, rule=lambda m, t: m.grid_sell[t] <= m.P_GRID_MAX * m.sell_mode[t]
+    )
+    m.grid_mode = pe.Constraint(
+        m.T, rule=lambda m, t: m.buy_mode[t] + m.sell_mode[t] <= 1
+    )
+
+    # End the day at the starting SOC so the optimizer cannot "borrow" energy
+    # from the terminal boundary merely to lower today's cost.
+    m.terminal_soc = pe.Constraint(expr=m.soc[23] == m.SOC0)
+    return m
+
+if __name__ == '__main__':
+    model = build_model()
+    solver = pe.SolverFactory('cbc')
+    result = solver.solve(model, tee=False)
+    print('Status:', result.solver.status)
+    print('Termination:', result.solver.termination_condition)
+    print(f'Optimal cost: $' + f'{pe.value(model.objective):.2f}')
+    for t in model.T:
+        print(t, pe.value(model.soc[t]), pe.value(model.grid_buy[t]), pe.value(model.grid_sell[t]))`,
+        "adapt": "Replace the sample load, renewable forecasts, tariffs, and battery limits with your own 24-hour series. For larger studies, add multiple storage units or scenario uncertainty.", "structure_title": "OPTIMIZATION FLOW", "structure_steps": ["LOAD / RENEWABLES", "BATTERY STATE", "GRID EXCHANGE", "FEASIBILITY", "OBJECTIVE", "OPTIMAL SCHEDULE"]
+    },
+    {
+        "id": "03", "title": "TRAVELLING SALESMAN HEURISTICS", "category": "ALGORITHMS / COMPUTATIONAL EXPERIMENT", "summary": "A computational comparison of route-construction heuristics against exact solutions on small instances. The site visualization shows routes being built and measured in real time.", "metric": "NEAREST NEIGHBOR · HEURISTICS · EXACT BASELINE", "visual": "tsp", "tags": ["ALGORITHMS", "TSP", "EXPERIMENT"], 
+        "code": `import math
+import numpy as np
+
+
+def tour_length(order, points):
+    order = np.asarray(order, dtype=int)
+    closed = np.r_[order, order[0]]
+    return np.linalg.norm(points[closed[1:]] - points[closed[:-1]], axis=1).sum()
+
+
+def nearest_neighbor(points, start=0):
+    n = len(points)
+    unvisited = set(range(n))
+    unvisited.remove(start)
+    tour = [start]
+    while unvisited:
+        current = tour[-1]
+        nxt = min(unvisited, key=lambda j: np.linalg.norm(points[current] - points[j]))
+        tour.append(nxt)
+        unvisited.remove(nxt)
+    return tour
+
+
+def farthest_first_then_nn(points):
+    center = points.mean(axis=0)
+    start = int(np.argmax(np.linalg.norm(points - center, axis=1)))
+    return nearest_neighbor(points, start)
+
+
+def two_opt(points, tour):
+    """Repeatedly reverse improving edges until no 2-opt move improves the tour."""
+    tour = list(tour)
+    improved = True
+    while improved:
+        improved = False
+        best_delta = 0.0
+        best_move = None
+        current = tour_length(tour, points)
+        n = len(tour)
+        for i in range(1, n - 2):
+            for j in range(i + 1, n):
+                candidate = tour[:i] + tour[i:j][::-1] + tour[j:]
+                delta = tour_length(candidate, points) - current
+                if delta < best_delta:
+                    best_delta = delta
+                    best_move = candidate
+        if best_move is not None:
+            tour = best_move
+            improved = True
+    return tour
+
+
+def held_karp(points):
+    """Exact TSP dynamic programming; practical for small n."""
+    n = len(points)
+    if n > 15:
+        raise ValueError('Exact Held-Karp baseline is intentionally limited to n <= 15.')
+    dist = np.linalg.norm(points[:, None, :] - points[None, :, :], axis=2)
+    # dp[(mask, j)] = (cost from 0 to j, parent)
+    dp = {}
+    for j in range(1, n):
+        dp[(1 << j, j)] = (dist[0, j], 0)
+    for mask_size in range(2, n):
+        for mask in range(1 << n):
+            if mask.bit_count() != mask_size or not (mask & 1) == 0:
+                continue
+            for j in range(1, n):
+                if not (mask & (1 << j)):
+                    continue
+                prev_mask = mask ^ (1 << j)
+                candidates = [
+                    (dp[(prev_mask, k)][0] + dist[k, j], k)
+                    for k in range(1, n) if (prev_mask & (1 << k))
+                ]
+                if candidates:
+                    dp[(mask, j)] = min(candidates)
+    full = (1 << n) - 2
+    best_cost, last = min((dp[(full, j)][0] + dist[j, 0], j) for j in range(1, n))
+    tour = [last]
+    mask = full
+    while mask:
+        cost, parent = dp[(mask, tour[-1])]
+        if parent == 0:
+            break
+        tour.append(parent)
+        mask ^= (1 << tour[-2])
+    tour.append(0)
+    tour.reverse()
+    return tour[:-1], best_cost
+
+
+def benchmark(sizes=(20, 50, 100, 200), runs=50, seed=42):
+    rng = np.random.default_rng(seed)
+    rows = []
+    for n in sizes:
+        for _ in range(runs):
+            points = rng.random((n, 2))
+            nn = nearest_neighbor(points)
+            ff = farthest_first_then_nn(points)
+            opt_cost = None
+            if n <= 12:
+                _, opt_cost = held_karp(points)
+            rows.append({
+                'n': n,
+                'nn': tour_length(nn, points),
+                'ff_nn': tour_length(ff, points),
+                'two_opt': tour_length(two_opt(points, nn), points),
+                'optimal': opt_cost,
+            })
+    return rows
+
+if __name__ == '__main__':
+    rng = np.random.default_rng(42)
+    points = rng.random((10, 2))
+    nn = nearest_neighbor(points)
+    improved = two_opt(points, nn)
+    optimal, optimum = held_karp(points)
+    print('NN:', tour_length(nn, points))
+    print('2-opt:', tour_length(improved, points))
+    print('Optimal:', optimum)
+    print('2-opt gap:', 100 * (tour_length(improved, points) / optimum - 1))`,
+        "adapt": "Increase the number of cities for heuristic experiments, but keep exact enumeration for small n only. Add 2-opt or simulated annealing to study local improvement.", "structure_title": "ROUTE SEARCH", "structure_steps": ["CITY SET", "START NODE", "GREEDY EDGE", "TOUR", "TOTAL DISTANCE", "COMPARE TO OPTIMUM"]
+    },
+    {
+        "id": "04", "title": "ECG CLASSIFICATION WITHOUT NEURAL NETWORKS", "category": "SIGNAL PROCESSING / CLASSICAL ML", "summary": "A non-neural ECG classification pipeline based on engineered statistical signal features, scaling, dimensionality reduction, and an SVM classifier. The portfolio version keeps preprocessing inside the training pipeline to prevent leakage.", "metric": "FEATURE ENGINEERING · PCA · SVM", "visual": "ecg", "tags": ["ECG", "SVM", "SIGNAL"], 
+        "code": `from pathlib import Path
+import numpy as np
+import pandas as pd
+from scipy.stats import skew, kurtosis
+from sklearn.model_selection import StratifiedKFold, GridSearchCV, train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+
+
+def weighted_moments(x):
+    x = np.asarray(x, dtype=float)
+    w = np.abs(x) + 1e-8
+    w_sum = w.sum()
+    mean = np.sum(w * x) / w_sum
+    var = np.sum(w * (x - mean) ** 2) / w_sum
+    std = np.sqrt(var) + 1e-12
+    return [
+        np.mean(x), np.std(x), skew(x, bias=False), kurtosis(x, bias=False),
+        np.min(x), np.max(x),
+        mean, std,
+        np.sum(w * (x - mean) ** 3) / w_sum / std**3,
+        np.sum(w * (x - mean) ** 4) / w_sum / std**4,
+        np.ptp(x), np.mean(np.abs(np.diff(x)))
+    ]
+
+
+def extract_features(signal_matrix):
+    return np.asarray([weighted_moments(row) for row in signal_matrix])
+
+
+def load_ecg_csv(path):
+    df = pd.read_csv(path, header=None)
+    signals = df.iloc[:, :-1].to_numpy(dtype=float)
+    labels = df.iloc[:, -1].to_numpy()
+    return signals, labels
+
+
+def build_model():
+    pipe = Pipeline([
+        ('scale', StandardScaler()),
+        ('pca', PCA(n_components=0.95, random_state=42)),
+        ('svm', SVC(kernel='rbf', probability=True, class_weight='balanced')),
+    ])
+    grid = {
+        'svm__C': [0.1, 1, 10, 50],
+        'svm__gamma': ['scale', 0.01, 0.1],
+    }
+    return GridSearchCV(
+        pipe, grid, scoring='f1_weighted', cv=5, n_jobs=-1, refit=True
+    )
+
+if __name__ == '__main__':
+    signals, labels = load_ecg_csv(Path('data/ecg.csv'))
+    X = extract_features(signals)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, labels, test_size=0.25, stratify=labels, random_state=42
+    )
+    model = build_model()
+    model.fit(X_train, y_train)
+    pred = model.predict(X_test)
+    print('Best parameters:', model.best_params_)
+    print(classification_report(y_test, pred))
+    print('Confusion matrix:\n', confusion_matrix(y_test, pred))
+    if len(np.unique(y_test)) == 2:
+        proba = model.predict_proba(X_test)[:, 1]
+        print('ROC-AUC:', roc_auc_score(y_test, proba))`,
+        "adapt": "Provide ECG traces as arrays and labels as 0/1. Replace the feature extractor with clinically meaningful descriptors for your own dataset.", "structure_title": "SIGNAL PIPELINE", "structure_steps": ["RAW ECG", "STATISTICAL FEATURES", "STANDARDIZE", "PCA", "SVM", "CLASS"]
+    },
+    {
+        "id": "05", "title": "AUDIO CLASSIFICATION WITHOUT NEURAL NETWORKS", "category": "AUDIO / SIGNAL PROCESSING / ML", "summary": "Audio is transformed into MFCC-based statistical descriptors and classified with PCA + SVM. The rebuilt experiment keeps original recordings isolated between train and test so augmented copies cannot leak across the split.", "metric": "MFCC · PCA · SVM", "visual": "audio", "tags": ["AUDIO", "MFCC", "SVM"], 
+        "code": `from pathlib import Path
+import numpy as np
+import librosa
+from sklearn.model_selection import GroupShuffleSplit, GroupKFold, GridSearchCV
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, confusion_matrix
+from scipy.stats import skew, kurtosis
+
+
+TARGET_SR = 22050
+DURATION_SECONDS = 3.0
+
+
+def load_audio(path, sr=TARGET_SR, duration=DURATION_SECONDS):
+    y, sr = librosa.load(path, sr=sr, mono=True, duration=duration)
+    target = int(sr * duration)
+    if len(y) < target:
+        y = np.pad(y, (0, target - len(y)))
+    else:
+        y = y[:target]
+    return y, sr
+
+
+def augment_waveform(y, rng):
+    """Augment a training waveform only; never create augmented test copies."""
+    scale = rng.uniform(0.85, 1.10)
+    noise = rng.normal(0, 0.003, size=len(y))
+    shift = rng.integers(-int(0.15 * len(y)), int(0.15 * len(y)) + 1)
+    shifted = np.roll(y, shift)
+    return np.clip(scale * shifted + noise, -1, 1)
+
+
+def mfcc_statistics(y, sr, n_mfcc=20):
+    mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
+    feats = []
+    for coeff in mfcc:
+        feats.extend([
+            coeff.mean(), coeff.std(),
+            np.percentile(coeff, 25), np.median(coeff), np.percentile(coeff, 75),
+            skew(coeff, bias=False), kurtosis(coeff, bias=False)
+        ])
+    return np.asarray(feats, dtype=float)
+
+
+def load_dataset(root):
+    root = Path(root)
+    paths, labels, groups = [], [], []
+    classes = sorted(p.name for p in root.iterdir() if p.is_dir())
+    class_map = {name: i for i, name in enumerate(classes)}
+    for class_name in classes:
+        for path in sorted((root / class_name).glob('*.wav')):
+            paths.append(path)
+            labels.append(class_map[class_name])
+            # One group per original recording prevents augmentation leakage.
+            groups.append(path.stem)
+    return paths, np.asarray(labels), np.asarray(groups), class_map
+
+
+def build_model():
+    return Pipeline([
+        ('scale', StandardScaler()),
+        ('pca', PCA(n_components=0.95, random_state=42)),
+        ('svm', SVC(kernel='rbf', class_weight='balanced')),
+    ])
+
+if __name__ == '__main__':
+    paths, y, groups, class_map = load_dataset('data/audio_dataset')
+    features = np.vstack([mfcc_statistics(*load_audio(p)) for p in paths])
+
+    split = GroupShuffleSplit(n_splits=1, test_size=0.25, random_state=42)
+    train_idx, test_idx = next(split.split(features, y, groups))
+
+    # Fit only on original training recordings.
+    model = GridSearchCV(
+        build_model(),
+        {'svm__C': [0.1, 1, 10], 'svm__gamma': ['scale', 0.01]},
+        scoring='f1_weighted', cv=GroupKFold(n_splits=4), n_jobs=-1
+    )
+    model.fit(features[train_idx], y[train_idx], groups=groups[train_idx])
+    pred = model.predict(features[test_idx])
+    print('Class mapping:', class_map)
+    print(classification_report(y[test_idx], pred))
+    print('Confusion matrix:\n', confusion_matrix(y[test_idx], pred))`,
+        "adapt": "Point paths to your own WAV/MP3-converted audio and keep one group per original recording. If you augment, augment only after the split.", "structure_title": "AUDIO PIPELINE", "structure_steps": ["WAVEFORM", "MFCC", "STATISTICS", "TRAIN / TEST BY RECORDING", "PCA", "SVM"]
+    },
+    {
+        "id": "06", "title": "AIRBASE DETECTION FROM AERIAL IMAGERY", "category": "COMPUTER VISION / DEEP LEARNING", "summary": "Binary aerial-image classification for airbase vs non-airbase imagery using a pretrained convolutional feature extractor, controlled fine-tuning, and a held-out test set. The page visualizes the feature flow and prediction process.", "metric": "MOBILENETV2 · TRANSFER LEARNING · BINARY CLASSIFICATION", "visual": "vision", "tags": ["CNN", "VISION", "TRANSFER"], 
+        "code": `from pathlib import Path
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+
+SEED = 42
+IMG_SIZE = (224, 224)
+BATCH = 32
+ROOT = Path('data/airbase_images')
+
+
+def load_datasets(root=ROOT):
+    train = tf.keras.utils.image_dataset_from_directory(
+        root / 'train', image_size=IMG_SIZE, batch_size=BATCH,
+        label_mode='binary', shuffle=True, seed=SEED
+    )
+    val = tf.keras.utils.image_dataset_from_directory(
+        root / 'val', image_size=IMG_SIZE, batch_size=BATCH,
+        label_mode='binary', shuffle=False
+    )
+    test = tf.keras.utils.image_dataset_from_directory(
+        root / 'test', image_size=IMG_SIZE, batch_size=BATCH,
+        label_mode='binary', shuffle=False
+    )
+    return train.prefetch(tf.data.AUTOTUNE), val.prefetch(tf.data.AUTOTUNE), test.prefetch(tf.data.AUTOTUNE)
+
+
+def build_transfer_model():
+    augment = keras.Sequential([
+        layers.RandomFlip('horizontal'),
+        layers.RandomRotation(0.05),
+        layers.RandomZoom(0.10),
+        layers.RandomContrast(0.10),
+    ], name='augmentation')
+
+    base = tf.keras.applications.MobileNetV2(
+        input_shape=(*IMG_SIZE, 3), include_top=False,
+        weights='imagenet'
+    )
+    base.trainable = False
+
+    inputs = keras.Input(shape=(*IMG_SIZE, 3))
+    x = augment(inputs)
+    x = tf.keras.applications.mobilenet_v2.preprocess_input(x)
+    x = base(x, training=False)
+    x = layers.GlobalAveragePooling2D()(x)
+    x = layers.Dropout(0.30)(x)
+    outputs = layers.Dense(1, activation='sigmoid')(x)
+    model = keras.Model(inputs, outputs)
+    model.compile(
+        optimizer=keras.optimizers.Adam(1e-3),
+        loss='binary_crossentropy',
+        metrics=['accuracy', keras.metrics.AUC(name='auc')]
+    )
+    return model, base
+
+
+def fine_tune(model, base, train, val, epochs=10):
+    base.trainable = True
+    # Keep early layers frozen; fine-tune the final feature extractor blocks.
+    for layer in base.layers[:-30]:
+        layer.trainable = False
+    model.compile(
+        optimizer=keras.optimizers.Adam(1e-5),
+        loss='binary_crossentropy',
+        metrics=['accuracy', keras.metrics.AUC(name='auc')]
+    )
+    return model.fit(train, validation_data=val, epochs=epochs,
+                     callbacks=[keras.callbacks.EarlyStopping(
+                         monitor='val_auc', mode='max', patience=3,
+                         restore_best_weights=True
+                     )])
+
+if __name__ == '__main__':
+    train, val, test = load_datasets()
+    model, base = build_transfer_model()
+    model.fit(
+        train, validation_data=val, epochs=15,
+        callbacks=[keras.callbacks.EarlyStopping(
+            monitor='val_auc', mode='max', patience=4,
+            restore_best_weights=True
+        )]
+    )
+    # Optional second-stage fine-tuning after the frozen-base stage.
+    fine_tune(model, base, train, val, epochs=8)
+
+    y_true = np.concatenate([y.numpy().ravel() for _, y in test])
+    proba = model.predict(test, verbose=0).ravel()
+    y_pred = (proba >= 0.5).astype(int)
+    print(classification_report(y_true, y_pred, digits=4))
+    print('Confusion matrix:\n', confusion_matrix(y_true, y_pred))
+    print('ROC-AUC:', roc_auc_score(y_true, proba))`,
+        "adapt": "Put images into class folders and keep a truly independent test set. After the first training stage, selectively unfreeze the top layers and fine-tune with a much smaller learning rate.", "structure_title": "VISION PIPELINE", "structure_steps": ["AERIAL IMAGE", "AUGMENT / STANDARDIZE", "CNN FEATURES", "CLASSIFIER", "PROBABILITY", "EXPLANATION"]
+    },
+    {
+        "id": "07", "title": "WINE QUALITY PREDICTION", "category": "TABULAR ML / ENSEMBLES", "summary": "A stacking regression ensemble combines tree-based learners to predict wine quality from physicochemical measurements, with domain-inspired interaction features. The portfolio presentation emphasizes error analysis and feature influence rather than a single score.", "metric": "STACKING · XGBOOST · LIGHTGBM · RANDOM FOREST · RIDGE", "visual": "wine", "tags": ["TABULAR", "ENSEMBLE", "REGRESSION"], 
+        "code": `import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor, StackingRegressor
+from sklearn.linear_model import Ridge
+from sklearn.model_selection import train_test_split, KFold, cross_val_score
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from lightgbm import LGBMRegressor
+from xgboost import XGBRegressor
+
+
+def engineer_features(df):
+    df = df.copy()
+    df['sugar_alcohol_ratio'] = df['residual sugar'] / (df['alcohol'] + 1e-9)
+    df['sulphur_ratio'] = df['free sulfur dioxide'] / (df['total sulfur dioxide'] + 1e-9)
+    df['acid_sum'] = df['fixed acidity'] + df['volatile acidity'] + df['citric acid']
+    df['acid_density'] = df['acid_sum'] / (df['density'] + 1e-9)
+    df['alcohol_density_ratio'] = df['alcohol'] / (df['density'] + 1e-9)
+    return df
+
+
+def build_model():
+    estimators = [
+        ('rf', RandomForestRegressor(
+            n_estimators=400, max_depth=10, min_samples_leaf=2,
+            random_state=42, n_jobs=-1
+        )),
+        ('xgb', XGBRegressor(
+            n_estimators=500, max_depth=5, learning_rate=0.04,
+            subsample=0.9, colsample_bytree=0.9, reg_lambda=1.0,
+            random_state=42, n_jobs=-1
+        )),
+        ('lgb', LGBMRegressor(
+            n_estimators=500, max_depth=-1, num_leaves=31,
+            learning_rate=0.03, subsample=0.9, colsample_bytree=0.9,
+            random_state=42, verbosity=-1
+        )),
+    ]
+    return StackingRegressor(
+        estimators=estimators,
+        final_estimator=Ridge(alpha=1.0),
+        cv=5, n_jobs=-1
+    )
+
+if __name__ == '__main__':
+    df = pd.read_csv('data/WineQT.csv')
+    df = engineer_features(df)
+    X = df.drop(columns=['quality', 'Id'], errors='ignore')
+    y = df['quality']
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.20, random_state=42
+    )
+
+    model = build_model()
+    model.fit(X_train, y_train)
+    pred = model.predict(X_test)
+
+    rmse = mean_squared_error(y_test, pred) ** 0.5
+    print(f'MAE : {mean_absolute_error(y_test, pred):.4f}')
+    print(f'RMSE: {rmse:.4f}')
+    print(f'R^2 : {r2_score(y_test, pred):.4f}')
+
+    cv = KFold(n_splits=5, shuffle=True, random_state=42)
+    cv_rmse = -cross_val_score(
+        model, X, y, cv=cv, scoring='neg_root_mean_squared_error', n_jobs=-1
+    )
+    print(f'5-fold RMSE: {cv_rmse.mean():.4f} ± {cv_rmse.std():.4f}')`,
+        "adapt": "Rename the target column and add/remove domain features based on your own chemical or quality dataset. Compare the ensemble to a simple baseline before interpreting gains.", "structure_title": "ENSEMBLE STACK", "structure_steps": ["TABULAR FEATURES", "DOMAIN FEATURES", "RANDOM FOREST", "XGBOOST", "META LEARNER", "QUALITY ESTIMATE"]
+    },
+    {
+        "id": "08", "title": "SELF-CONTAINED SARCASM DETECTION", "category": "NLP / CLASSICAL MACHINE LEARNING", "summary": "A non-neural NLP experiment using pretrained word vectors, sentence-level aggregation, engineered statistics, and an SVM. The rebuilt version keeps dimensionality reduction inside the training pipeline and makes the comparison reproducible.", "metric": "GLOVE · FEATURE ENGINEERING · SVM", "visual": "sarcasm", "tags": ["NLP", "GLOVE", "SVM"], 
+        "code": `import re
+from pathlib import Path
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, confusion_matrix
+
+TOKEN_RE = re.compile(r'\b\w+\b')
+
+
+def load_glove(path, dimension=100):
+    embeddings = {}
+    with open(path, encoding='utf-8') as f:
+        for line in f:
+            parts = line.rstrip().split()
+            if len(parts) != dimension + 1:
+                continue
+            embeddings[parts[0]] = np.asarray(parts[1:], dtype=np.float32)
+    return embeddings
+
+
+def sentence_vector(text, embeddings, dimension=100):
+    tokens = TOKEN_RE.findall(text.lower())
+    vectors = [embeddings[t] for t in tokens if t in embeddings]
+    if not vectors:
+        return np.zeros(dimension, dtype=np.float32)
+    return np.mean(vectors, axis=0)
+
+
+def vector_statistics(v):
+    v = np.asarray(v, dtype=float)
+    w = np.abs(v) + 1e-8
+    wmean = np.average(v, weights=w)
+    wvar = np.average((v - wmean) ** 2, weights=w)
+    return np.r_[
+        v,
+        v.mean(), v.std(), v.min(), v.max(),
+        wmean, np.sqrt(wvar),
+        np.mean(np.abs(v)), np.linalg.norm(v)
+    ]
+
+
+def build_features(texts, embeddings):
+    vectors = [sentence_vector(t, embeddings) for t in texts]
+    return np.vstack([vector_statistics(v) for v in vectors])
+
+if __name__ == '__main__':
+    data = pd.read_csv('data/sarcasm_dataset.csv')
+    embeddings = load_glove('data/glove.6B.100d.txt', 100)
+
+    X = build_features(data['text'].astype(str), embeddings)
+    y = data['label'].to_numpy()
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.20, stratify=y, random_state=42
+    )
+
+    # PCA is fitted only inside the training workflow, so the test set stays unseen.
+    pipe = Pipeline([
+        ('scale', StandardScaler()),
+        ('pca', PCA(n_components=0.95, random_state=42)),
+        ('svm', SVC(class_weight='balanced')),
+    ])
+    search = GridSearchCV(
+        pipe,
+        {'svm__C': [0.1, 1, 10], 'svm__kernel': ['linear', 'rbf']},
+        cv=5, scoring='f1_weighted', n_jobs=-1
+    )
+    search.fit(X_train, y_train)
+    pred = search.predict(X_test)
+    print('Best parameters:', search.best_params_)
+    print(classification_report(y_test, pred))
+    print('Confusion matrix:\n', confusion_matrix(y_test, pred))`,
+        "adapt": "Replace `texts` and `labels` with your own sentence classification data. Keep embeddings fixed if you want to study the effect of the downstream classifier separately.", "structure_title": "TEXT PIPELINE", "structure_steps": ["TEXT", "TOKEN / EMBEDDING FEATURES", "SCALE", "PCA", "SVM", "SARCASTIC / NOT"]
+    },
+    {
+        "id": "09", "title": "CONTEXTUAL SARCASM DETECTION", "category": "NLP / KNOWLEDGE-GUIDED SYSTEM", "summary": "A lightweight contextual detector combines lexical cues, sentiment, semantic similarity, and domain knowledge instead of a neural language model. It is presented as an interpretable reasoning system rather than as a conventional trained classifier.", "metric": "SEMANTIC SIMILARITY · SENTIMENT · RULES", "visual": "context", "tags": ["NLP", "RULE SYSTEM", "INTERPRETABLE"], 
+        "code": `import re
+from pathlib import Path
+import numpy as np
+from textblob import TextBlob
+
+TOKEN_RE = re.compile(r'\b\w+\b')
+
+POSITIVE = {
+    'angel', 'saint', 'perfect', 'wonderful', 'best', 'hero', 'kind',
+    'humane', 'compassionate', 'good', 'loving', 'moral', 'peaceful',
+    'friendly', 'beloved', 'gentle', 'miracle', 'saved', 'definition'
+}
+NEGATIVE = {
+    'monster', 'evil', 'tyrant', 'murderer', 'villain', 'ruthless',
+    'cruel', 'terror', 'brutal', 'oppressor', 'destroyed', 'hunted'
+}
+CONTEXT = {
+    'dictator', 'regime', 'war', 'holocaust', 'invasion', 'empire',
+    'sith', 'jedi', 'death', 'genocide', 'commander', 'palpatine'
+}
+
+
+def load_glove(path):
+    glove = {}
+    with open(path, encoding='utf-8') as f:
+        for line in f:
+            parts = line.rstrip().split()
+            if len(parts) < 3:
+                continue
+            word, values = parts[0], parts[1:]
+            vec = np.asarray(values, dtype=np.float32)
+            norm = np.linalg.norm(vec)
+            if norm:
+                glove[word] = vec / norm
+    return glove
+
+
+def tokens(text):
+    return TOKEN_RE.findall(text.lower())
+
+
+def embed(text, glove):
+    vecs = [glove[t] for t in tokens(text) if t in glove]
+    if not vecs:
+        return np.zeros(next(iter(glove.values())).shape[0], dtype=float)
+    v = np.mean(vecs, axis=0)
+    return v / (np.linalg.norm(v) + 1e-12)
+
+
+def score_sentence(sentence, context_text, glove):
+    ws = set(tokens(sentence))
+    pos = len(ws & POSITIVE)
+    neg = len(ws & NEGATIVE)
+    ctx = len(ws & CONTEXT)
+
+    v = embed(sentence, glove)
+    c = embed(context_text, glove)
+    similarity = float(np.dot(v, c)) if np.any(v) and np.any(c) else 0.0
+    sentiment = TextBlob(sentence).sentiment.polarity
+
+    components = {
+        'positive_cues': 2.0 * pos,
+        'negative_cues': -2.0 * neg,
+        'context_cues': 0.8 * ctx,
+        'semantic_similarity': 1.2 * similarity,
+        'positive_sentiment': max(0.0, sentiment),
+    }
+    score = sum(components.values())
+    return score, components
+
+
+def classify(sentence, context_text, glove, threshold=2.0):
+    score, evidence = score_sentence(sentence, context_text, glove)
+    label = 'Sarcastic' if score >= threshold else 'Not Sarcastic'
+    return label, score, evidence
+
+if __name__ == '__main__':
+    glove = load_glove('data/glove.6B.100d.txt')
+    context = (
+        'Darth Vader is a ruthless enforcer of the Galactic Empire. '
+        'He hunted Jedi and participated in the destruction of worlds.'
+    )
+    examples = [
+        'Vader was a real angel.',
+        'Vader was the definition of peace.',
+        'Vader hunted down the remaining Jedi.',
+        'Vader served Emperor Palpatine.',
+    ]
+    for sentence in examples:
+        label, score, evidence = classify(sentence, context, glove)
+        print(f'{label:14} {score:6.2f}  {sentence}')
+        print('  evidence:', evidence)`,
+        "adapt": "Replace the lexicons and context representation for your own domain. Keep the score components visible so users can understand why a sentence received a label.", "structure_title": "INTERPRETABLE DECISION", "structure_steps": ["LEXICAL CUES", "DOMAIN CONTEXT", "SENTIMENT", "SEMANTIC SIMILARITY", "SCORE", "DECISION"]
+    },
+    {
+        "id": "10", "title": "ACOUSTIC SIGNAL & SPECTRAL ANALYSIS", "category": "AUDIO / SIGNAL PROCESSING", "summary": "A reusable signal-processing pipeline reads acoustic recordings, applies configurable band-pass filters, estimates power spectral density with Welch's method, and exposes frequency/PSD structure for comparison.", "metric": "FILTERING · WELCH PSD · SPECTRAL FEATURES", "visual": "acoustic", "tags": ["AUDIO", "PSD", "FILTERING"], 
+        "code": `from pathlib import Path
+import numpy as np
+import pandas as pd
+import librosa
+from scipy.signal import butter, sosfiltfilt, welch
+
+WINDOW = 2048
+OVERLAP = 1024
+BANDS = {
+    'low': (50.0, 1000.0),
+    'fish': (100.0, 2000.0),
+    'high': (2000.0, 20000.0),
+    'broad': (50.0, 22000.0),
+}
+
+
+def safe_band(high, sr):
+    return min(float(high), 0.95 * sr / 2.0)
+
+
+def bandpass(signal, sr, low, high, order=6):
+    high = safe_band(high, sr)
+    if not 0 < low < high:
+        raise ValueError(f'Invalid band {low}-{high} Hz for sample rate {sr}.')
+    sos = butter(order, [low, high], btype='bandpass', fs=sr, output='sos')
+    return sosfiltfilt(sos, signal)
+
+
+def psd(signal, sr):
+    nperseg = min(WINDOW, len(signal))
+    noverlap = min(OVERLAP, nperseg // 2)
+    freq, power = welch(
+        signal, fs=sr, window='hann', nperseg=nperseg,
+        noverlap=noverlap, detrend='constant', scaling='density'
+    )
+    power_db = 10.0 * np.log10(power + 1e-15)
+    return freq, power_db
+
+
+def analyze_file(path):
+    signal, sr = librosa.load(path, sr=None, mono=True)
+    result = {}
+    f, p = psd(signal, sr)
+    result['broadband'] = (f, p)
+    for name, (low, high) in BANDS.items():
+        filtered = bandpass(signal, sr, low, high)
+        result[name] = psd(filtered, sr)
+    return sr, result
+
+
+def peak_in_band(freq, power, low, high):
+    mask = (freq >= low) & (freq <= high)
+    if not mask.any():
+        return np.nan, np.nan
+    local_freq = freq[mask]
+    local_power = power[mask]
+    i = int(np.argmax(local_power))
+    return float(local_freq[i]), float(local_power[i])
+
+
+def process_directory(folder):
+    rows = []
+    for path in sorted(Path(folder).glob('*.wav')):
+        sr, spectra = analyze_file(path)
+        row = {'file': path.name, 'sample_rate': sr}
+        for name, (low, high) in BANDS.items():
+            freq, power = spectra[name]
+            peak_f, peak_p = peak_in_band(freq, power, low, safe_band(high, sr))
+            row[f'{name}_peak_hz'] = peak_f
+            row[f'{name}_peak_db'] = peak_p
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+if __name__ == '__main__':
+    summary = process_directory('data/acoustic_recordings')
+    print(summary.to_string(index=False))`,
+        "adapt": "Change the band limits for your instrument, animal call, environmental recording, or acoustic dataset. For many files, wrap the function in a batch table and compare peak frequency distributions.", "structure_title": "SPECTRAL PIPELINE", "structure_steps": ["RAW AUDIO", "BAND-PASS FILTER", "WELCH PSD", "PEAKS / BANDS", "COMPARISON", "INTERPRETATION"]
+    },
+    {
+        "id": "11", "title": "REVERSIBLE NUMERIC DATA TRANSFORMATION", "category": "DATA TRANSFORMATION / NUMERICAL METHODS", "summary": "A reversible column-wise transformation for numerical tables. The original experiment applies randomized affine transforms with optional standardization; the portfolio version makes the round-trip deterministic, explicit, and honest about not being cryptographic security.", "metric": "AFFINE TRANSFORM · REVERSIBLE ROUND-TRIP", "visual": "encryption", "tags": ["DATA", "NUMERICAL", "REVERSIBLE"], 
+        "code": `from dataclasses import dataclass
+import numpy as np
+import pandas as pd
+
+@dataclass
+class AffineParams:
+    scale: float
+    shift: float
+    mean: float
+    std: float
+
+class ReversibleNumericTransform:
+    """Reversible numerical masking; not cryptographic encryption."""
+    def __init__(self, normalize=True, random_state=42):
+        self.normalize = normalize
+        self.rng = np.random.default_rng(random_state)
+        self.params = {}
+
+    def fit(self, df):
+        numeric = df.select_dtypes(include=np.number)
+        if numeric.empty:
+            raise ValueError('The input table contains no numeric columns.')
+        self.params = {}
+        for col in numeric.columns:
+            mean = float(numeric[col].mean())
+            std = float(numeric[col].std(ddof=0)) or 1.0
+            self.params[col] = AffineParams(
+                scale=float(self.rng.uniform(0.5, 2.0)),
+                shift=float(self.rng.uniform(-100.0, 100.0)),
+                mean=mean,
+                std=std,
+            )
+        return self
+
+    def transform(self, df):
+        self._check_fitted(df)
+        out = df.copy()
+        for col, p in self.params.items():
+            x = out[col].astype(float)
+            z = (x - p.mean) / p.std if self.normalize else x
+            out[col] = z * p.scale + p.shift
+        return out
+
+    def inverse_transform(self, df):
+        self._check_fitted(df)
+        out = df.copy()
+        for col, p in self.params.items():
+            z = (out[col].astype(float) - p.shift) / p.scale
+            out[col] = z * p.std + p.mean if self.normalize else z
+        return out
+
+    def _check_fitted(self, df):
+        missing = [c for c in self.params if c not in df.columns]
+        if missing:
+            raise ValueError(f'Missing columns: {missing}')
+
+if __name__ == '__main__':
+    data = pd.DataFrame({
+        'sales_revenue': [1000, 1500, 2000, 2500],
+        'cost': [400, 600, 800, 1000],
+    })
+    codec = ReversibleNumericTransform(normalize=True, random_state=42)
+    codec.fit(data)
+    encoded = codec.transform(data)
+    decoded = codec.inverse_transform(encoded)
+    print('Transformed data:\n', encoded.round(4))
+    print('Maximum round-trip error:', np.abs(decoded - data).to_numpy().max())`,
+        "adapt": "Use this when you need an easily reversible numerical transformation for demonstrations or controlled masking. For real confidentiality, use an established cryptographic scheme instead.", "structure_title": "REVERSIBLE TRANSFORM", "structure_steps": ["RAW NUMBERS", "RANDOM SCALE", "RANDOM SHIFT", "OPTIONAL NORMALIZE", "TRANSFORM", "EXACT INVERSE"]
+    },
+    {
+        "id": "12", "title": "HAM / SPAM SMS CLASSIFICATION", "category": "NLP / TEXT CLASSIFICATION", "summary": "A compact spam filter turns SMS text into TF-IDF features and learns a linear SVM decision boundary. The portfolio version removes the cloud-runtime dependency and keeps vectorization and classification together in one pipeline.", "metric": "TF-IDF · LINEAR SVM · BINARY CLASSIFICATION", "visual": "spam", "tags": ["NLP", "TF-IDF", "SVM"], 
+        "code": `import pandas as pd
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import LinearSVC
+from sklearn.metrics import classification_report, confusion_matrix
+
+
+def build_classifier():
+    pipeline = Pipeline([
+        ('tfidf', TfidfVectorizer(
+            lowercase=True,
+            strip_accents='unicode',
+            ngram_range=(1, 2),
+            min_df=2,
+            max_df=0.98,
+            sublinear_tf=True,
+        )),
+        ('svm', LinearSVC(class_weight='balanced')),
+    ])
+    grid = {
+        'svm__C': [0.25, 0.5, 1.0, 2.0],
+    }
+    return GridSearchCV(pipeline, grid, cv=5, scoring='f1_macro', n_jobs=-1)
+
+if __name__ == '__main__':
+    df = pd.read_csv('data/smsspamcollection.tsv', sep='\t').dropna(subset=['label', 'message'])
+    X_train, X_test, y_train, y_test = train_test_split(
+        df['message'], df['label'],
+        test_size=0.25, stratify=df['label'], random_state=42
+    )
+    model = build_classifier()
+    model.fit(X_train, y_train)
+    pred = model.predict(X_test)
+    print('Best C:', model.best_params_['svm__C'])
+    print(classification_report(y_test, pred))
+    print('Confusion matrix:\n', confusion_matrix(y_test, pred))
+    examples = [
+        'Congratulations! You have won a prize. Reply now.',
+        'Can we meet after class tomorrow?'
+    ]
+    print(list(zip(examples, model.predict(examples))))`,
+        "adapt": "Keep the `label` and `message` columns or rename them in the two places shown. The same pipeline works for many short-text binary classification tasks.", "structure_title": "TEXT CLASSIFIER", "structure_steps": ["SMS TEXT", "TOKENIZATION", "TF-IDF", "LINEAR SVM", "DECISION", "SPAM / HAM"]
+    },
+    {
+        "id": "13", "title": "CONVOLUTIONAL AUTOENCODER FOR TIME-SERIES ANOMALIES", "category": "DEEP LEARNING / TIME SERIES", "summary": "A 1-D convolutional autoencoder learns the normal temporal pattern of machine telemetry and flags windows with unusually high reconstruction error. The rebuilt version uses a training-only threshold and makes the anomaly score explicit.", "metric": "CONV1D AUTOENCODER · RECONSTRUCTION ERROR", "visual": "autoencoder", "tags": ["DEEP LEARNING", "AUTOENCODER", "ANOMALY"], 
+        "code": `from pathlib import Path
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+CSV = 'data/WASHING_MACHINE_1_A8DA0C199B64.csv'
+TIME_STEPS = 288
+RESAMPLE_RATE = '300s'
+
+
+def prepare_series(csv_path):
+    df = pd.read_csv(csv_path)
+    df = df.drop(columns=['Unnamed: 0', 'serialnumber', 'cashimageid'], errors='ignore')
+    df['operationtime'] = pd.to_datetime(df['operationtime'])
+    df = df[df['operationtime'] >= '2021-12-20 00:00:00']
+    df = df.sort_values('operationtime').set_index('operationtime')
+    # Retain the original experiment's resampling idea while using modern pandas syntax.
+    df = df.resample('1s').ffill()
+    df = df.resample(RESAMPLE_RATE).max()
+    return df
+
+
+def make_windows(values, steps=TIME_STEPS):
+    values = np.asarray(values, dtype=np.float32)
+    if len(values) < steps:
+        raise ValueError('Not enough samples for the requested window length.')
+    return np.stack([values[i:i+steps] for i in range(len(values)-steps+1)])
+
+
+def build_autoencoder(shape):
+    return keras.Sequential([
+        layers.Input(shape=shape),
+        layers.Conv1D(32, 7, strides=2, padding='same', activation='relu'),
+        layers.Dropout(0.2),
+        layers.Conv1D(16, 7, strides=2, padding='same', activation='relu'),
+        layers.Conv1DTranspose(16, 7, strides=2, padding='same', activation='relu'),
+        layers.Dropout(0.2),
+        layers.Conv1DTranspose(32, 7, strides=2, padding='same', activation='relu'),
+        layers.Conv1D(1, 7, padding='same'),
+    ])
+
+if __name__ == '__main__':
+    df = prepare_series(CSV)
+    target = df[['status']].astype(float)
+
+    # Split temporally: normal history is the training reference, later data is held out.
+    split_at = int(len(target) * 0.70)
+    train_raw = target.iloc[:split_at]
+    test_raw = target.iloc[split_at:]
+
+    mean = train_raw.mean()
+    std = train_raw.std().replace(0, 1)
+    train_scaled = (train_raw - mean) / std
+    test_scaled = (test_raw - mean) / std
+
+    x_train = make_windows(train_scaled.to_numpy())
+    x_test = make_windows(test_scaled.to_numpy())
+
+    model = build_autoencoder(x_train.shape[1:])
+    model.compile(optimizer=keras.optimizers.Adam(1e-3), loss='mae')
+    model.fit(
+        x_train, x_train,
+        epochs=50, batch_size=128, validation_split=0.10,
+        callbacks=[keras.callbacks.EarlyStopping(
+            monitor='val_loss', patience=5, restore_best_weights=True
+        )]
+    )
+
+    train_pred = model.predict(x_train, verbose=0)
+    test_pred = model.predict(x_test, verbose=0)
+    train_error = np.mean(np.abs(train_pred - x_train), axis=(1, 2))
+    test_error = np.mean(np.abs(test_pred - x_test), axis=(1, 2))
+
+    # Quantile threshold is more robust than taking the single largest training error.
+    threshold = float(np.quantile(train_error, 0.995))
+    anomaly_windows = test_error > threshold
+
+    print('Threshold:', threshold)
+    print('Test windows:', len(test_error))
+    print('Flagged windows:', int(anomaly_windows.sum()))`,
+        "adapt": "Replace `status` with your normal telemetry variable. Choose the threshold from a training/validation distribution; do not use test anomalies to set it.", "structure_title": "ANOMALY AUTOENCODER", "structure_steps": ["NORMAL SIGNAL", "WINDOWS", "CONV1D ENCODER", "LATENT PATTERN", "DECODER", "RECONSTRUCTION ERROR"]
+    },
+    {
+        "id": "14", "title": "CIRCULAR MOTION → SINUSOIDAL PROJECTION", "category": "NUMERICAL SIMULATION / DYNAMICAL SYSTEMS", "summary": "A clean parametric simulation connects uniform circular motion to its sinusoidal coordinate projection. The original experiment animates the moving point, its circular trace, and the corresponding sine wave; this version packages the same idea as reusable simulation code.", "metric": "PARAMETRIC MOTION · SINUSOIDAL PROJECTION", "visual": "circular", "tags": ["SIMULATION", "MATH", "ANIMATION"], 
+        "code": `import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from IPython.display import HTML
+
+
+def circular_motion(radius=1.0, angular_speed=1.0, duration=2*np.pi, frames=300):
+    t = np.linspace(0, duration, frames)
+    theta = angular_speed * t
+    x = radius * np.cos(theta)
+    y = radius * np.sin(theta)
+    return t, theta, x, y
+
+
+t, theta, x, y = circular_motion(radius=1.0, angular_speed=1.0, frames=360)
+
+fig, (ax_circle, ax_projection) = plt.subplots(2, 1, figsize=(9, 8))
+ax_circle.set_aspect('equal')
+ax_circle.set_xlim(-1.3, 1.3)
+ax_circle.set_ylim(-1.3, 1.3)
+ax_projection.set_xlim(theta.min(), theta.max())
+ax_projection.set_ylim(-1.2, 1.2)
+
+circle = plt.Circle((0, 0), 1, fill=False, linestyle='--', alpha=0.5)
+ax_circle.add_patch(circle)
+point, = ax_circle.plot([], [], 'o')
+trace, = ax_circle.plot([], [], '-', alpha=0.7)
+wave, = ax_projection.plot([], [], '-')
+projection, = ax_projection.plot([], [], 'o')
+
+ax_circle.set_title('Uniform Circular Motion')
+ax_circle.set_xlabel('x')
+ax_circle.set_ylabel('y')
+ax_projection.set_title('Vertical Projection: y = sin(theta)')
+ax_projection.set_xlabel('theta')
+ax_projection.set_ylabel('y')
+
+
+def init():
+    point.set_data([], [])
+    trace.set_data([], [])
+    wave.set_data([], [])
+    projection.set_data([], [])
+    return point, trace, wave, projection
+
+
+def update(frame):
+    point.set_data([x[frame]], [y[frame]])
+    trace.set_data(x[:frame+1], y[:frame+1])
+    wave.set_data(theta[:frame+1], y[:frame+1])
+    projection.set_data([theta[frame]], [y[frame]])
+    return point, trace, wave, projection
+
+ani = FuncAnimation(
+    fig, update, init_func=init, frames=len(theta),
+    interval=1000/60, blit=True, repeat=True
+)
+plt.tight_layout()
+
+# In a Jupyter environment:
+# display(HTML(ani.to_jshtml()))`,
+        "adapt": "Change `radius`, `angular_speed`, and `duration` to study frequency and amplitude. The key identity is the projection y(t) = r sin(theta(t)).", "structure_title": "PARAMETRIC DYNAMICS", "structure_steps": ["ANGLE θ", "x = r cos θ", "y = r sin θ", "TRACE", "PROJECTION", "SINE WAVE"]
+    },
+    {
+        "id": "15", "title": "SYNTHETIC TRANSACTION LAUNDERING DETECTION", "category": "UNSUPERVISED LEARNING / ANOMALY DETECTION", "summary": "Synthetic transaction data is used to test anomaly detection under a deliberately planted suspicious pattern. The rebuild separates feature engineering from scoring, uses a stable one-hot representation for categories, and reports minority-class metrics instead of relying on accuracy alone.", "metric": "ISOLATION FOREST · ANOMALY DETECTION", "visual": "laundering", "tags": ["ANOMALY", "ISOLATION FOREST", "FINANCE"], 
+        "code": `import numpy as np
+import pandas as pd
+from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import IsolationForest
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.metrics import classification_report, confusion_matrix
+
+
+def generate_normal_data(n=1200, seed=42):
+    rng = np.random.default_rng(seed)
+    return pd.DataFrame({
+        'transaction_id': np.arange(n),
+        'customer_id': rng.integers(100, 200, n),
+        'timestamp': pd.date_range('2023-01-01', periods=n, freq='h'),
+        'amount': rng.lognormal(3.0, 0.5, n),
+        'location': rng.choice(['NY', 'CA', 'TX', 'FL', 'IL'], n),
+        'product_category': rng.choice(['A', 'B', 'C', 'D'], n),
+        'label': 0,
+    })
+
+
+def inject_laundering(df, n=60, seed=43):
+    rng = np.random.default_rng(seed)
+    suspicious = df.sample(n=1, random_state=seed).copy()
+    suspicious = pd.concat([suspicious] * n, ignore_index=True)
+    suspicious['transaction_id'] = np.arange(len(df), len(df) + n)
+    suspicious['customer_id'] = rng.integers(900, 1000, n)
+    suspicious['timestamp'] = pd.date_range('2023-03-01', periods=n, freq='30min')
+    suspicious['amount'] = 9999.99
+    suspicious['location'] = 'Offshore'
+    suspicious['label'] = 1
+    return pd.concat([df, suspicious], ignore_index=True)
+
+
+def add_features(df):
+    out = df.copy()
+    out['hour'] = out['timestamp'].dt.hour
+    out['day_of_week'] = out['timestamp'].dt.dayofweek
+    out['amount_log'] = np.log1p(out['amount'])
+    # Velocity-like feature: transaction count for each customer in the sample window.
+    out['customer_frequency'] = out.groupby('customer_id')['transaction_id'].transform('count')
+    return out
+
+if __name__ == '__main__':
+    df = inject_laundering(generate_normal_data())
+    df = add_features(df)
+
+    features = ['amount_log', 'hour', 'day_of_week', 'customer_frequency', 'location', 'product_category']
+    X = df[features]
+    y = df['label'].to_numpy()
+
+    # Fit the detector only on normal training observations. The held-out test set
+    # contains both normal and injected suspicious records for evaluation.
+    normal_train, remainder = train_test_split(
+        df[df['label'] == 0], test_size=0.25, random_state=42
+    )
+    _, test = train_test_split(df, test_size=0.25, stratify=df['label'], random_state=42)
+
+    pre = ColumnTransformer([
+        ('num', StandardScaler(), ['amount_log', 'hour', 'day_of_week', 'customer_frequency']),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), ['location', 'product_category']),
+    ])
+    model = Pipeline([
+        ('pre', pre),
+        ('detector', IsolationForest(
+            n_estimators=300, contamination=0.05,
+            random_state=42, n_jobs=-1
+        )),
+    ])
+
+    model.fit(normal_train[features])
+    predicted = (model.predict(test[features]) == -1).astype(int)
+
+    print('Confusion matrix:\n', confusion_matrix(test['label'], predicted))
+    print(classification_report(test['label'], predicted, digits=4))`,
+        "adapt": "Use your own transaction table and define domain-relevant features such as amount, time, velocity, geography, counterparty, and frequency. Tune contamination to expected anomaly prevalence.", "structure_title": "ANOMALY PIPELINE", "structure_steps": ["TRANSACTIONS", "NUMERIC / CATEGORICAL FEATURES", "ENCODE + SCALE", "ISOLATION FOREST", "ANOMALY SCORE", "FLAG"]
+    },
+    {
+        "id": "16", "title": "YELP REVIEW POLARITY CLASSIFICATION", "category": "NLP / SENTIMENT / SUPERVISED ML", "summary": "Restaurant reviews are reduced to a binary polarity task—1-star versus 5-star—and classified from bag-of-words/TF-IDF text features. The original experiment also explores review length and rating distributions; the portfolio version focuses the modeling story.", "metric": "TF-IDF · NAIVE BAYES · POLARITY", "visual": "nlp", "tags": ["NLP", "NAIVE BAYES", "SENTIMENT"], 
+        "code": `import pandas as pd
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import classification_report, confusion_matrix
+
+
+def build_model():
+    pipe = Pipeline([
+        ('bow', CountVectorizer(
+            lowercase=True,
+            ngram_range=(1, 2),
+            min_df=2,
+            max_df=0.98,
+        )),
+        ('nb', MultinomialNB()),
+    ])
+    return GridSearchCV(
+        pipe,
+        {'nb__alpha': [0.05, 0.1, 0.5, 1.0]},
+        cv=5, scoring='f1_macro', n_jobs=-1
+    )
+
+if __name__ == '__main__':
+    df = pd.read_csv('data/yelp.csv').dropna(subset=['text', 'stars'])
+    # Retain the original polarity framing: extreme ratings only.
+    df = df[df['stars'].isin([1, 5])].copy()
+    df['text_length'] = df['text'].str.len()
+    print('Class counts:\n', df['stars'].value_counts().sort_index())
+    print('Mean review length by class:\n', df.groupby('stars')['text_length'].mean())
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        df['text'], df['stars'],
+        test_size=0.30, stratify=df['stars'], random_state=101
+    )
+    model = build_model()
+    model.fit(X_train, y_train)
+    pred = model.predict(X_test)
+    print('Best alpha:', model.best_params_['nb__alpha'])
+    print(classification_report(y_test, pred))
+    print('Confusion matrix:\n', confusion_matrix(y_test, pred))`,
+        "adapt": "For a new review dataset, provide `text` plus a binary target. For multi-class ratings, replace the filter and evaluate macro-F1 across all classes.", "structure_title": "REVIEW CLASSIFIER", "structure_steps": ["RAW REVIEW", "TF-IDF", "NAIVE BAYES", "POLARITY", "PREDICTION", "ERROR ANALYSIS"]
+    },
+    {
+        "id": "17", "title": "IDLY vs DOSA — CONVOLUTIONAL IMAGE CLASSIFICATION", "category": "DEEP LEARNING / COMPUTER VISION", "summary": "A small two-class food image dataset becomes a convolutional classifier. The improved version uses augmentation, validation separation, early stopping, and a stronger regularized architecture so the tiny-data experiment is less fragile.", "metric": "CNN · IMAGE AUGMENTATION · TRANSFERABLE PIPELINE", "visual": "idly", "tags": ["CNN", "VISION", "FOOD"], 
+        "code": `from pathlib import Path
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+
+SEED = 42
+IMG_SIZE = (224, 224)
+BATCH = 16
+ROOT = Path('data/dosa_idly')
+
+
+def datasets(root=ROOT):
+    train = tf.keras.utils.image_dataset_from_directory(
+        root / 'train', validation_split=0.20, subset='training',
+        seed=SEED, image_size=IMG_SIZE, batch_size=BATCH,
+        label_mode='binary', shuffle=True
+    )
+    val = tf.keras.utils.image_dataset_from_directory(
+        root / 'train', validation_split=0.20, subset='validation',
+        seed=SEED, image_size=IMG_SIZE, batch_size=BATCH,
+        label_mode='binary', shuffle=False
+    )
+    test = tf.keras.utils.image_dataset_from_directory(
+        root / 'test', image_size=IMG_SIZE, batch_size=BATCH,
+        label_mode='binary', shuffle=False
+    )
+    return tuple(ds.prefetch(tf.data.AUTOTUNE) for ds in (train, val, test))
+
+
+def build_cnn():
+    augmentation = keras.Sequential([
+        layers.RandomFlip('horizontal'),
+        layers.RandomRotation(0.08),
+        layers.RandomZoom(0.12),
+        layers.RandomContrast(0.10),
+    ])
+
+    model = keras.Sequential([
+        layers.Input((*IMG_SIZE, 3)),
+        augmentation,
+        layers.Rescaling(1/255),
+        layers.Conv2D(32, 3, padding='same', activation='relu'),
+        layers.BatchNormalization(),
+        layers.MaxPooling2D(),
+        layers.Conv2D(64, 3, padding='same', activation='relu'),
+        layers.BatchNormalization(),
+        layers.MaxPooling2D(),
+        layers.Conv2D(128, 3, padding='same', activation='relu'),
+        layers.BatchNormalization(),
+        layers.MaxPooling2D(),
+        layers.GlobalAveragePooling2D(),
+        layers.Dropout(0.35),
+        layers.Dense(64, activation='relu'),
+        layers.Dropout(0.20),
+        layers.Dense(1, activation='sigmoid'),
+    ])
+    model.compile(
+        optimizer=keras.optimizers.Adam(1e-3),
+        loss='binary_crossentropy',
+        metrics=['accuracy', keras.metrics.AUC(name='auc')]
+    )
+    return model
+
+if __name__ == '__main__':
+    train, val, test = datasets()
+    model = build_cnn()
+    model.fit(
+        train, validation_data=val, epochs=30,
+        callbacks=[keras.callbacks.EarlyStopping(
+            monitor='val_auc', mode='max', patience=6,
+            restore_best_weights=True
+        )]
+    )
+    y_true = np.concatenate([y.numpy().ravel() for _, y in test])
+    proba = model.predict(test, verbose=0).ravel()
+    pred = (proba >= 0.5).astype(int)
+    print(classification_report(y_true, pred, digits=4))
+    print('Confusion matrix:\n', confusion_matrix(y_true, pred))
+    print('ROC-AUC:', roc_auc_score(y_true, proba))`,
+        "adapt": "Put each class in its own folder. With very small datasets, prefer transfer learning and a genuinely independent test set before making strong claims.", "structure_title": "CONVOLUTIONAL VISION", "structure_steps": ["FOOD IMAGE", "AUGMENT", "CONVOLUTION", "POOL / FEATURES", "CLASSIFIER", "IDLY / DOSA"]
+    },
+    {
+        "id": "18", "title": "IMAGE CLASSIFICATION WITHOUT NEURAL NETWORKS", "category": "CLASSICAL COMPUTER VISION / MACHINE LEARNING", "summary": "A classical computer-vision pipeline that converts images to grayscale, extracts weighted intensity statistics plus lightweight gradient descriptors, reduces the feature space with PCA, and compares SVM and KNN classifiers. The implementation is designed to be transparent, data-efficient, and directly reusable on a folder-organized image dataset.", "metric": "WEIGHTED STATISTICS · PCA · SVM / KNN", "visual": "classicalvision", "tags": ["VISION", "PCA", "SVM"], 
+        "code": `from pathlib import Path
+import numpy as np
+from PIL import Image
+from scipy.stats import skew, kurtosis
+from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+
+
+def weighted_median(values, weights):
+    order = np.argsort(values)
+    values = values[order]
+    weights = weights[order]
+    return values[np.cumsum(weights) >= 0.5 * weights.sum()][0]
+
+
+def weighted_image_features(path, size=(64, 64)):
+    image = Image.open(path).convert('L').resize(size)
+    x = np.asarray(image, dtype=np.float64) / 255.0
+    flat = x.ravel()
+    weights = np.abs(flat) + 1e-8
+    wsum = weights.sum()
+    wmean = np.sum(weights * flat) / wsum
+    wvar = np.sum(weights * (flat - wmean) ** 2) / wsum
+    wstd = np.sqrt(wvar) + 1e-12
+    wskew = np.sum(weights * (flat - wmean) ** 3) / wsum / wstd**3
+    wkurt = np.sum(weights * (flat - wmean) ** 4) / wsum / wstd**4
+    return np.array([
+        wmean, wvar, wskew, wkurt, weighted_median(flat, weights),
+        flat.mean(), flat.std(), flat.min(), flat.max(), np.ptp(flat)
+    ])
+
+
+def load_folder_dataset(root='data/image_dataset'):
+    root = Path(root)
+    paths, labels = [], []
+    for class_dir in sorted(p for p in root.iterdir() if p.is_dir()):
+        for path in sorted(class_dir.glob('*')):
+            if path.suffix.lower() in {'.jpg', '.jpeg', '.png'}:
+                paths.append(path)
+                labels.append(class_dir.name)
+    if not paths:
+        raise ValueError('No supported images found.')
+    return np.vstack([weighted_image_features(p) for p in paths]), np.asarray(labels)
+
+
+def classifier(name):
+    if name == 'svm':
+        estimator = SVC(class_weight='balanced')
+        grid = {'clf__C': [0.1, 1, 10], 'clf__kernel': ['linear', 'rbf']}
+    else:
+        estimator = KNeighborsClassifier()
+        grid = {'clf__n_neighbors': [3, 5, 7], 'clf__weights': ['uniform', 'distance']}
+    return GridSearchCV(
+        Pipeline([
+            ('scale', StandardScaler()),
+            ('pca', PCA(n_components=0.95, random_state=42)),
+            ('clf', estimator),
+        ]),
+        grid, scoring='f1_macro', cv=StratifiedKFold(5, shuffle=True, random_state=42), n_jobs=-1
+    )
+
+if __name__ == '__main__':
+    X, y = load_folder_dataset()
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.25, stratify=y, random_state=42
+    )
+    for name in ('svm', 'knn'):
+        model = classifier(name)
+        model.fit(X_train, y_train)
+        pred = model.predict(X_test)
+        print('\n===', name.upper(), '===')
+        print('Best parameters:', model.best_params_)
+        print(classification_report(y_test, pred))
+        print('Confusion matrix:\n', confusion_matrix(y_test, pred))`,
+        "adapt": "Use the same image-size and feature extractor for all images. This is a compact feature-based baseline—not a replacement for deep learning on large, complex image problems.", "structure_title": "FEATURE-ENGINEERED VISION", "structure_steps": ["RGB IMAGE", "GRAYSCALE", "WEIGHTED STATISTICS", "PCA", "SVM / KNN", "CLASS"]
+    },
+    {
+        "id": "19", "title": "ROTATED ELLIPTICAL CLUSTER ANOMALY DETECTION", "category": "GEOMETRIC ANOMALY DETECTION", "summary": "A geometric anomaly detector for rotated elliptical point clouds. It finds a dominant axis from the farthest pair of observations, constructs an orthogonal coordinate frame, estimates robust semi-axis lengths, and assigns an interpretable normalized ellipse score.", "metric": "ROTATED ELLIPSE · GEOMETRIC OUTLIER SCORE", "visual": "ellipse", "tags": ["ANOMALY", "GEOMETRY", "ALGORITHM"], 
+        "code": `import numpy as np
+from sklearn.cluster import DBSCAN
+from sklearn.ensemble import IsolationForest
+from sklearn.neighbors import LocalOutlierFactor
+from sklearn.metrics import classification_report, confusion_matrix
+
+
+def farthest_pair(X):
+    best = (0, 1, -np.inf)
+    for i in range(len(X) - 1):
+        diff = X[i + 1:] - X[i]
+        d2 = np.einsum('ij,ij->i', diff, diff)
+        j_rel = int(np.argmax(d2))
+        if d2[j_rel] > best[2]:
+            best = (i, i + 1 + j_rel, float(d2[j_rel]))
+    return X[best[0]], X[best[1]]
+
+
+def fit_rotated_ellipse(X, quantile=0.99):
+    """Paper-inspired geometric model: major direction from farthest pair;
+    minor direction is orthogonal; semi-axes come from robust projected spread."""
+    X = np.asarray(X, dtype=float)
+    p1, p2 = farthest_pair(X)
+    center = (p1 + p2) / 2.0
+    u = p2 - p1
+    u /= np.linalg.norm(u) + 1e-12
+    v = np.array([-u[1], u[0]])
+    Z = (X - center) @ np.column_stack([u, v])
+    a = max(float(np.quantile(np.abs(Z[:, 0]), quantile)), 1e-9)
+    b = max(float(np.quantile(np.abs(Z[:, 1]), quantile)), 1e-9)
+    score = (Z[:, 0] / a) ** 2 + (Z[:, 1] / b) ** 2
+    return center, u, v, a, b, score
+
+
+def endpoint_heuristic(point, center, u, v, a, b):
+    """Distance-to-axis-endpoint heuristic corresponding to the paper's rule."""
+    endpoints = [center - a*u, center + a*u, center - b*v, center + b*v]
+    distances = [np.linalg.norm(point - e) for e in endpoints]
+    return (
+        distances[0] > 2*a or distances[1] > 2*a
+        or distances[2] > 2*b or distances[3] > 2*b
+    )
+
+
+def synthetic_data(seed=42, n=1000, anomalies=40, angle=0.45):
+    rng = np.random.default_rng(seed)
+    base = rng.normal(size=(n, 2))
+    A = np.array([[4.0, 0.0], [0.0, 1.2]])
+    R = np.array([[np.cos(angle), -np.sin(angle)], [np.sin(angle), np.cos(angle)]])
+    normal = base @ A.T @ R.T
+    outliers = rng.uniform(-10, 10, size=(anomalies, 2))
+    X = np.vstack([normal, outliers])
+    y = np.r_[np.zeros(n, dtype=int), np.ones(anomalies, dtype=int)]
+    return X, y
+
+if __name__ == '__main__':
+    X, y = synthetic_data()
+    center, u, v, a, b, score = fit_rotated_ellipse(X[y == 0], quantile=0.995)
+    pred_geo = (score > 1.0).astype(int)
+    print('Geometric detector')
+    print(classification_report(y, pred_geo, digits=4))
+    print(confusion_matrix(y, pred_geo))
+
+    # Baselines for context; scores are on the same synthetic benchmark.
+    pred_if = (IsolationForest(contamination=0.04, random_state=42).fit_predict(X) == -1).astype(int)
+    pred_lof = (LocalOutlierFactor(n_neighbors=20, contamination=0.04).fit_predict(X) == -1).astype(int)
+    pred_db = (DBSCAN(eps=0.8, min_samples=8).fit_predict(X) == -1).astype(int)
+    for name, pred in [('Isolation Forest', pred_if), ('LOF', pred_lof), ('DBSCAN', pred_db)]:
+        print('\n', name)
+        print(classification_report(y, pred, digits=4))`,
+        "adapt": "For your own data, standardize units first and choose the quantile from a clean reference set. The ellipse assumption should be treated as a model choice, not a universal law.", "structure_title": "ELLIPSE ANOMALY FIELD", "structure_steps": ["POINT CLOUD", "FARTHEST PAIR", "ROTATED AXES", "ROBUST SEMI-AXES", "ELLIPTIC SCORE", "ANOMALY"]
+    },
+    {
+        "id": "20", "title": "THE PULICKAL ALGORITHM — BLOCK-PARALLEL LINEAR SOLVER", "category": "NUMERICAL LINEAR ALGEBRA / ALGORITHMS", "summary": "A block-structured numerical linear solver built around two outer elimination fronts and a reduced central system. The implementation exposes the decomposition explicitly, verifies the residual, and compares the result with a standard direct solve.", "metric": "BLOCK ELIMINATION · SCHUR CORE · RESIDUAL CHECK", "visual": "pulickal", "tags": ["LINEAR ALGEBRA", "BLOCK SOLVER", "ALGORITHM"], 
+        "code": `import numpy as np
+from concurrent.futures import ThreadPoolExecutor
+from scipy.linalg import lu_factor, lu_solve
+
+
+def split_blocks(A, b, p, q):
+    n = A.shape[0]
+    r = n - p - q
+    if r <= 0:
+        raise ValueError('p + q must leave a non-empty central core.')
+    A11 = A[:p, :p]
+    A12 = A[:p, p:p+r]
+    A13 = A[:p, p+r:]
+    A21 = A[p:p+r, :p]
+    A22 = A[p:p+r, p:p+r]
+    A23 = A[p:p+r, p+r:]
+    A31 = A[p+r:, :p]
+    A32 = A[p+r:, p:p+r]
+    A33 = A[p+r:, p+r:]
+    return (A11, A12, A13, A21, A22, A23, A31, A32, A33), (b[:p], b[p:p+r], b[p+r:])
+
+
+def factor_front(A, rhs_columns):
+    """LU with partial pivoting for one independent front."""
+    lu, piv = lu_factor(A)
+    solved = lu_solve((lu, piv), rhs_columns)
+    return lu, piv, solved
+
+
+def pulickal_solve(A, b, p, q, parallel=True):
+    """Reference implementation of the paper's 3x3 dual-front decomposition.
+
+    Phase 1: factor A11 and A33 independently.
+    Phase 2: assemble the dual Schur / Pulickal Core.
+    Phase 3: solve the reduced central system.
+    Phase 4: solve the coupled boundary system and return [x1, x2, x3].
+    """
+    A = np.asarray(A, dtype=float)
+    b = np.asarray(b, dtype=float)
+    n = A.shape[0]
+    if A.shape != (n, n) or b.shape != (n,):
+        raise ValueError('A must be square and b must have matching length.')
+
+    blocks, rhs = split_blocks(A, b, p, q)
+    A11, A12, A13, A21, A22, A23, A31, A32, A33 = blocks
+    b1, b2, b3 = rhs
+
+    # Independent Alpha and Beta front reductions.
+    def alpha():
+        lu, piv = lu_factor(A11)
+        invA11_A12 = lu_solve((lu, piv), A12)
+        invA11_b1 = lu_solve((lu, piv), b1)
+        return invA11_A12, invA11_b1
+
+    def beta():
+        lu, piv = lu_factor(A33)
+        invA33_A32 = lu_solve((lu, piv), A32)
+        invA33_b3 = lu_solve((lu, piv), b3)
+        return invA33_A32, invA33_b3
+
+    if parallel:
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            left_future = pool.submit(alpha)
+            right_future = pool.submit(beta)
+            left, right = left_future.result(), right_future.result()
+    else:
+        left, right = alpha(), beta()
+
+    invA11_A12, invA11_b1 = left
+    invA33_A32, invA33_b3 = right
+
+    # Pulickal Core / dual Schur complement.
+    core = A22 - A21 @ invA11_A12 - A23 @ invA33_A32
+    core_rhs = b2 - A21 @ invA11_b1 - A23 @ invA33_b3
+    x2 = np.linalg.solve(core, core_rhs)
+
+    # Once x2 is known, boundary equations become a coupled 2x2 block system.
+    rhs_boundary = np.concatenate([
+        b1 - A12 @ x2,
+        b3 - A32 @ x2,
+    ])
+    boundary_matrix = np.block([
+        [A11, A13],
+        [A31, A33],
+    ])
+    x_boundary = np.linalg.solve(boundary_matrix, rhs_boundary)
+    x1 = x_boundary[:p]
+    x3 = x_boundary[p:]
+
+    x = np.concatenate([x1, x2, x3])
+    residual = np.linalg.norm(A @ x - b)
+    return x, {'core': core, 'residual_norm': residual}
+
+if __name__ == '__main__':
+    rng = np.random.default_rng(7)
+    n, p, q = 12, 4, 4
+    A = rng.normal(size=(n, n)) + 5.0 * np.eye(n)
+    b = rng.normal(size=n)
+
+    x, info = pulickal_solve(A, b, p, q, parallel=True)
+    x_direct = np.linalg.solve(A, b)
+    print('Pulickal residual:', info['residual_norm'])
+    print('Agreement with direct solve:', np.linalg.norm(x - x_direct))`,
+        "adapt": "Choose `p` and `q` as the left/right front sizes. For large matrices, replace the two independent front solves with parallel workers. Always validate the result with a residual check.", "structure_title": "BLOCK-PARALLEL SOLVER", "structure_steps": ["3×3 BLOCK PARTITION", "LEFT FRONT", "RIGHT FRONT", "CENTRAL CORE", "CORE SOLVE", "BACK-SUBSTITUTION"]
+    }
+];
+
+// =========================================
+// ARCHITECTURE & STATE
+// =========================================
+const DOM = {
+    activeCat: document.getElementById('activeCat'),
+    activeTitle: document.getElementById('activeTitle'),
+    activeSummary: document.getElementById('activeSummary'),
+    activeMeta: document.getElementById('activeMeta'),
+    activeReadout: document.getElementById('activeReadout'),
+    prev: document.getElementById('prev'),
+    next: document.getElementById('next'),
+    pause: document.getElementById('pause'),
+    random: document.getElementById('random'),
+    vizLabel: document.getElementById('vizLabel'),
+    viz: document.getElementById('viz'),
+    vizHelp: document.getElementById('vizHelp'),
+    structureTitle: document.getElementById('structureTitle'),
+    structureFlow: document.getElementById('structureFlow'),
+    structureNote: document.getElementById('structureNote'),
+    index: document.getElementById('index'),
+    cards: document.getElementById('cards'),
+    codeTitle: document.getElementById('codeTitle'),
+    adapt: document.getElementById('adapt'),
+    copy: document.getElementById('copy'),
+    code: document.getElementById('code'),
+    frameInfo: document.getElementById('frameInfo'),
+    clock: document.getElementById('clock')
+};
+
+const ctx = DOM.viz.getContext('2d');
+let active = 0, running = true, frame = 0, mouse = { x: 0.5, y: 0.5 };
+
+// =========================================
+// CANVAS UTILITIES
+// =========================================
+function fit() {
+    const r = DOM.viz.getBoundingClientRect();
+    const d = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(320, r.width);
+    const h = Math.max(420, r.height);
+    if (DOM.viz.width !== w * d || DOM.viz.height !== h * d) {
+        DOM.viz.width = w * d;
+        DOM.viz.height = h * d;
+    }
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    return [w, h];
+}
+
+function clear(w, h) { ctx.fillStyle = "#000"; ctx.fillRect(0, 0, w, h); }
+function text(s, x, y, size = 11, c = "#ddd", weight = "normal", align = "left") {
+    ctx.fillStyle = c;
+    ctx.font = weight + " " + size + 'px "Courier New"';
+    ctx.textAlign = align;
+    ctx.fillText(s, x, y);
+}
+function line(a, b, c, d, col = "#332a16", width = 1, dash = []) {
+    ctx.strokeStyle = col;
+    ctx.lineWidth = width;
+    ctx.setLineDash(dash);
+    ctx.beginPath(); ctx.moveTo(a, b); ctx.lineTo(c, d); ctx.stroke();
+    ctx.setLineDash([]);
+}
+function dot(x, y, r, c = "#D4AF37") {
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fillStyle = c; ctx.fill();
+}
+function rect(x, y, w, h, c = "#5b481b") { ctx.strokeStyle = c; ctx.strokeRect(x, y, w, h); }
+function arrow(x1, y1, x2, y2, c = "#D4AF37") {
+    line(x1, y1, x2, y2, c, 1.6);
+    const a = Math.atan2(y2 - y1, x2 - x1), l = 8;
+    ctx.fillStyle = c;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - l * Math.cos(a - 0.5), y2 - l * Math.sin(a - 0.5));
+    ctx.lineTo(x2 - l * Math.cos(a + 0.5), y2 - l * Math.sin(a + 0.5));
+    ctx.closePath();
+    ctx.fill();
+}
+function rng(seed) { let s = seed >>> 0; return () => ((s = s * 1664525 + 1013904223 >>> 0) / 4294967296); }
+
+// =========================================
+// VISUALIZATIONS
+// =========================================
+const Visualizations = {
+    rl: (w, h, t) => {
+        text("TABULAR RL / POLICY EVOLUTION", 16, 22, 12, "#D4AF37", "bold");
+        const cx = w * 0.5, cy = h * 0.54, s = 92;
+        for (let r = 0; r < 3; r++) {
+            for (let c = 0; c < 3; c++) {
+                const x = cx + (c - 1) * s * 0.55, y = cy + (r - 1) * s * 0.55;
+                rect(x - 42, y - 42, 84, 84);
+                const v = 0.2 + 0.7 * (0.5 + 0.5 * Math.sin(t * 1.4 + r + c + mouse.x * 2.2 - mouse.y));
+                dot(x, y, 6 + 10 * v, "rgba(212,175,55," + (0.18 + 0.55 * v) + ")");
+                text(v.toFixed(2), x, y + 4, 10, "#eee", "bold", "center");
+            }
+        }
+        const x = cx + (Math.floor(t * 1.1) % 3 - 1) * s * 0.55, y = cy + (Math.floor(t * 0.7) % 3 - 1) * s * 0.55;
+        ctx.strokeStyle = "#f0c94d"; ctx.lineWidth = 2; ctx.strokeRect(x - 31, y - 31, 62, 62);
+    },
+    microgrid: (w, h, t) => {
+        text("24-HOUR ENERGY DISPATCH", 16, 22, 12, "#D4AF37", "bold");
+        const l = 35, r = w - 30, top = 66, bot = h - 80;
+        for (let i = 0; i < 25; i++) { const x = l + (r - l) * i / 24; line(x, top, x, bot, "#15130e"); }
+        const f = (x, phase) => 0.5 + 0.5 * Math.sin((x / 24) * Math.PI * 2 - phase);
+        [["LOAD", "#c8c0b0", 0], ["SOLAR", "#D4AF37", Math.PI / 2], ["WIND", "#756f62", 2.4]].forEach(([nm, col, ph], j) => {
+            ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.beginPath();
+            for (let i = 0; i < 24; i++) {
+                const x = l + (r - l) * i / 23;
+                const v = j === 0 ? 56 + 28 * f(i, ph) : j === 1 ? 82 * Math.max(0, f(i - 2, ph)) : 28 + 10 * Math.sin(i * 1.1 + t);
+                const y = bot - (bot - top) * Math.max(0, Math.min(100, v)) / 100;
+                i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+            }
+            ctx.stroke();
+            text(nm, r, top + 18 + j * 17, 8, col, "bold", "right");
+        });
+        const tt = (t * 0.9 + 24) % 24, x = l + (r - l) * tt / 24;
+        line(x, top, x, bot, "#f0c94d", 1, [4, 5]); dot(x, bot - 100, 4);
+        
+        // Conditional DOM update for dynamic text
+        const currentReadout = `<b>OPTIMIZATION:</b> renewable supply + grid + storage · <b>TIME:</b> ${tt.toFixed(1)} h`;
+        if (DOM.activeReadout.innerHTML !== currentReadout) DOM.activeReadout.innerHTML = currentReadout;
+    },
+    tsp: (w, h, t) => {
+        text("TSP HEURISTIC ROUTE CONSTRUCTION", 16, 22, 12, "#D4AF37", "bold");
+        const q = rng(12), n = 11, P = [];
+        for (let i = 0; i < n; i++) P.push({ x: 40 + q() * (w - 80), y: 60 + q() * (h - 130) });
+        let order = [0], rem = new Set([...Array(n).keys()].slice(1));
+        while (rem.size) {
+            let a = order[order.length - 1], best = null, bd = 1e9;
+            for (const j of rem) {
+                const dx = P[a].x - P[j].x, dy = P[a].y - P[j].y, d = dx * dx + dy * dy;
+                if (d < bd) { bd = d; best = j; }
+            }
+            order.push(best); rem.delete(best);
+        }
+        const count = Math.min(n, Math.max(2, Math.floor((t * 1.3) % 13)));
+        ctx.strokeStyle = "#c9b675"; ctx.lineWidth = 2; ctx.beginPath();
+        for (let i = 0; i < count; i++) {
+            const p = P[order[i]];
+            i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y);
+        }
+        if (count === n) ctx.lineTo(P[0].x, P[0].y);
+        ctx.stroke();
+        P.forEach((p, i) => dot(p.x, p.y, 4, i < count ? "#D4AF37" : "#4b453a"));
+        
+        const currentReadout = `<b>CITIES:</b> ${n} · <b>EDGE COUNT:</b> ${count - 1} · <b>METHOD:</b> nearest-neighbor`;
+        if (DOM.activeReadout.innerHTML !== currentReadout) DOM.activeReadout.innerHTML = currentReadout;
+    },
+    ecg: (w, h, t) => {
+        text("ECG TRACE / ENGINEERED FEATURE SPACE", 16, 22, 12, "#D4AF37", "bold");
+        const l = 28, r = w - 28, mid = h * 0.37;
+        line(l, mid, r, mid, "#262016");
+        ctx.strokeStyle = "#D4AF37"; ctx.lineWidth = 2; ctx.beginPath();
+        for (let x = l; x < r; x += 2) {
+            const u = (x - l) / (r - l) * 8 + t * 1.8, ph = ((u % 1) + 1) % 1;
+            let y = 0.03 * Math.sin(u * 12);
+            if (ph < 0.18) y += 0.06 * Math.sin(ph * 10);
+            if (ph > 0.18 && ph < 0.27) y += (ph - 0.18) * 5;
+            if (ph > 0.27 && ph < 0.33) y -= 0.75 * (ph - 0.27);
+            if (ph > 0.33 && ph < 0.42) y += (ph - 0.33) * 5;
+            const py = mid - y * (h * 0.3);
+            x === l ? ctx.moveTo(x, py) : ctx.lineTo(x, py);
+        }
+        ctx.stroke();
+        for (let i = 0; i < 5; i++) {
+            const x = 80 + i * (w - 160) / 4, y = h * 0.72;
+            rect(x - 45, y - 22, 90, 44);
+            text(["MEAN", "STD", "SKEW", "KURT", "PEAK"][i], x, y, 9, "#f0c94d", "bold", "center");
+        }
+    },
+    audio: (w, h, t) => {
+        text("AUDIO / MFCC / SVM", 16, 22, 12, "#D4AF37", "bold");
+        const l = 24, r = w - 24, top = 54, bot = h - 50, cols = 72, rows = 26;
+        for (let c = 0; c < cols; c++) {
+            for (let rr = 0; rr < rows; rr++) {
+                const v = 0.5 + 0.5 * Math.sin(c * 0.25 + rr * 0.57 + t * 2) + 0.12 * Math.sin(c * 0.08 - t);
+                ctx.fillStyle = "rgba(212,175,55," + (0.03 + 0.26 * Math.max(0, Math.min(1, v))) + ")";
+                ctx.fillRect(l + (r - l) * c / cols, top + (bot - top) * rr / rows, (r - l) / cols + 1, (bot - top) / rows + 1);
+            }
+        }
+        rect(r - 170, top + 16, 140, 60, "#4a3a17");
+        text("PCA → SVM", r - 100, top + 52, 12, "#f0c94d", "bold", "center");
+    },
+    vision: (w, h, t) => {
+        text("AERIAL IMAGE / CNN FEATURES", 16, 22, 12, "#D4AF37", "bold");
+        vizNetwork(w, h, t, "IMAGE", "AIRBASE / NON-AIRBASE");
+    },
+    wine: (w, h, t) => {
+        text("ENSEMBLE FEATURE INFLUENCE", 16, 22, 12, "#D4AF37", "bold");
+        const labels = ["alcohol", "volatile acidity", "sulphates", "density", "citric acid", "sugar"];
+        labels.forEach((s, i) => {
+            const y = 78 + i * 45, v = 0.25 + 0.65 * (0.5 + 0.5 * Math.sin(t * 0.8 + i));
+            text(s, 24, y + 8, 9, "#9e988c");
+            rect(140, y, w * 0.54, 18);
+            ctx.fillStyle = "#D4AF37"; ctx.fillRect(140, y, w * 0.54 * v, 18);
+        });
+        rect(w * 0.76, h * 0.28, 120, 90);
+        text("RF + XGB", w * 0.82, h * 0.28 + 32, 10, "#e4dccd", "bold", "center");
+        text("→ RIDGE", w * 0.82, h * 0.28 + 56, 10, "#f0c94d", "bold", "center");
+    },
+    sarcasm: (w, h, t) => {
+        text("EMBEDDING / PCA / SVM SPACE", 16, 22, 12, "#D4AF37", "bold");
+        const q = rng(77), cx = w / 2, cy = h / 2;
+        for (let i = 0; i < 150; i++) {
+            const g = i % 2, x = cx + (q() - 0.5) * w * 0.82, y = cy + (q() - 0.5) * h * 0.68;
+            dot(x, y, 1.5 + 1.2 * Math.sin(t + i * 0.2), g ? "#a48c62" : "#4a463e");
+        }
+        dot(cx + Math.sin(t * 0.6) * 100, cy + Math.cos(t * 0.8) * 70, 7, "#f0c94d");
+    },
+    context: (w, h, t) => {
+        text("CONTEXTUAL DECISION PATH", 16, 22, 12, "#D4AF37", "bold");
+        const ns = [["LEXICON", 0.2, 0.28], ["CONTEXT", 0.5, 0.22], ["SENTIMENT", 0.8, 0.3], ["SIMILARITY", 0.5, 0.6], ["DECISION", 0.5, 0.84]];
+        for (const [lab, x, y] of ns) {
+            dot(w * x, h * y, 4 + 2 * Math.sin(t + x * 4), "#D4AF37");
+            rect(w * x - 55, h * y - 23, 110, 46, "#4a3a17");
+            text(lab, w * x, h * y + 4, 9, "#e5ddcc", "bold", "center");
+        }
+        for (let i = 0; i < 4; i++) arrow(w * ns[i][1], h * ns[i][2], w * 0.5, h * 0.84, "#5b481b");
+    },
+    acoustic: (w, h, t) => {
+        text("PSD / BAND-PASS FILTER BANK", 16, 22, 12, "#D4AF37", "bold");
+        const l = 28, r = w - 28, top = 62, bot = h * 0.72;
+        ctx.strokeStyle = "#D4AF37"; ctx.lineWidth = 2; ctx.beginPath();
+        for (let i = 0; i < 260; i++) {
+            const q = i / 259;
+            const v = 0.16 + 0.2 * Math.sin(q * 31 + t) + 0.14 * Math.sin(q * 77 - t * 0.5) + 0.45 * Math.exp(-Math.pow((q - 0.37) / 0.06, 2)) + 0.22 * Math.exp(-Math.pow((q - 0.72) / 0.05, 2));
+            const x = l + (r - l) * q, y = bot - v * (bot - top);
+            i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        }
+        ctx.stroke();
+        for (const q of [0.12, 0.34, 0.57, 0.8]) { const x = l + (r - l) * q; line(x, top, x, bot, "#5d4b1b", 1, [3, 4]); }
+        text("WELCH PSD", l, bot + 35, 9, "#8a7322", "bold");
+    },
+    encryption: (w, h, t) => {
+        text("REVERSIBLE NUMERIC TRANSFORM", 16, 22, 12, "#D4AF37", "bold");
+        const y = h * 0.43, l = 60, mid = w * 0.5, r = w - 60;
+        rect(l, y - 70, 150, 140); rect(r - 150, y - 70, 150, 140);
+        arrow(l + 150, y, mid - 30, y); arrow(mid + 30, y, r - 150, y);
+        rect(mid - 45, y - 45, 90, 90, "#6a541c");
+        text("× scale", mid, y - 14, 10, "#f0c94d", "bold", "center");
+        text("+ shift", mid, y + 8, 10, "#ddd3be", "normal", "center");
+        text("RAW TABLE", l + 75, y + 8, 10, "#bdb3a0", "bold", "center");
+        text("TRANSFORMED", r - 75, y + 8, 10, "#bdb3a0", "bold", "center");
+    },
+    spam: (w, h, t) => {
+        text("SMS / TF-IDF / LINEAR SVM", 16, 22, 12, "#D4AF37", "bold");
+        const y = h * 0.5, l = 50, r = w - 50;
+        for (let i = 0; i < 26; i++) {
+            const x = l + (r - l) * i / 25, v = 0.1 + 0.8 * (0.5 + 0.5 * Math.sin(t * 1.4 + i * 0.8));
+            line(x, y - 120 * v, x, y + 80 * v, "#8d7841", 2);
+        }
+        arrow(l, y, r * 0.55, y, "#D4AF37");
+        rect(r * 0.6, y - 65, w * 0.22, 130, "#4a3a17");
+        text("SPAM ?", r * 0.71, y, 14, "#f0c94d", "bold", "center");
+    },
+    autoencoder: (w, h, t) => {
+        text("NORMAL SEQUENCE → RECONSTRUCTION", 16, 22, 12, "#D4AF37", "bold");
+        const l = 30, r = w - 30, cy = h * 0.42;
+        ctx.strokeStyle = "#c6b98f"; ctx.lineWidth = 2; ctx.beginPath();
+        for (let i = 0; i < 200; i++) {
+            const q = i / 199, x = l + (r - l) * q;
+            const y = cy - 80 * (0.3 * Math.sin(q * 14 + t) + 0.25 * Math.sin(q * 31 - t * 0.3) + 0.28 * Math.exp(-Math.pow((q - 0.5) / 0.09, 2)));
+            i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        }
+        ctx.stroke();
+        line(l, h * 0.72, r, h * 0.72, "#272116");
+        const th = h * 0.72 - 50; line(l, th, r, th, "#5d4a19", 1, [4, 4]);
+        const pulse = (0.5 + 0.5 * Math.sin(t * 0.65));
+        dot(l + (r - l) * (0.25 + 0.5 * pulse), h * 0.42 - 65, 5, "#f0c94d");
+        text("RECONSTRUCTION ERROR THRESHOLD", r, h * 0.72 - 60, 8, "#8a7322", "bold", "right");
+    },
+    circular: (w, h, t) => {
+        text("UNIFORM CIRCULAR MOTION / SINE PROJECTION", 16, 22, 12, "#D4AF37", "bold");
+        const cx = w * 0.27, cy = h * 0.48, rad = Math.min(w, h) * 0.22, theta = t * 1.2;
+        ctx.strokeStyle = "#4b3e1c"; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+        const x = cx + rad * Math.cos(theta), y = cy + rad * Math.sin(theta);
+        line(cx, cy, x, y, "#6e5a22"); dot(x, y, 6, "#f0c94d");
+        const l = w * 0.55, r = w - 30, base = cy;
+        ctx.strokeStyle = "#bda870"; ctx.beginPath();
+        for (let i = 0; i < 180; i++) {
+            const q = i / 179, a = q * Math.PI * 2, yy = base - rad * 0.7 * Math.sin(a), xx = l + (r - l) * q;
+            i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy);
+        }
+        ctx.stroke();
+        dot(l + (r - l) * ((theta % (Math.PI * 2)) / (Math.PI * 2)), base - rad * 0.7 * Math.sin(theta), 5, "#f0c94d");
+        const baseY = cy + rad + 40; line(x, baseY, l, baseY, "#2c2415");
+    },
+    laundering: (w, h, t) => {
+        text("TRANSACTION STREAM / ANOMALY SCORE", 16, 22, 12, "#D4AF37", "bold");
+        const q = rng(9), l = 30, r = w - 35, bot = h - 65;
+        for (let i = 0; i < 180; i++) {
+            const x = l + (r - l) * i / 179, y = bot - 35 - 110 * q() + 18 * Math.sin(i * 0.16 + t);
+            const suspicious = i % 27 === 0 || i % 43 === 0;
+            dot(x, y, suspicious ? 5 : 2.5, suspicious ? "#f0c94d" : "#635e52");
+        }
+        const x = l + (r - l) * ((t * 0.18) % 1);
+        line(x, 50, x, bot, "#6d571e", 1, [3, 5]);
+        rect(r - 190, 66, 160, 65);
+        text("ISOLATION FOREST", r - 110, 92, 10, "#f0c94d", "bold", "center");
+        text("ANOMALY SCORE", r - 110, 111, 9, "#a89c82", "normal", "center");
+    },
+    nlp: (w, h, t) => {
+        text("REVIEW POLARITY / TF-IDF / NAIVE BAYES", 16, 22, 12, "#D4AF37", "bold");
+        const cx = w * 0.5, cy = h * 0.52, q = rng(31);
+        for (let i = 0; i < 120; i++) {
+            const g = i % 2, ang = q() * Math.PI * 2, rad = 35 + q() * 180;
+            dot(cx + Math.cos(ang) * rad, cy + Math.sin(ang) * rad * 0.55, 2.2, g ? "#a08c64" : "#4b4740");
+        }
+        line(cx - 220, cy, cx + 220, cy, "#6a551d", 1, [4, 5]);
+        text("NEGATIVE", cx - 200, cy - 12, 9, "#7f776a", "bold");
+        text("POSITIVE", cx + 200, cy - 12, 9, "#f0c94d", "bold", "right");
+    },
+    idly: (w, h, t) => {
+        text("IMAGE / CONVOLUTION / IDLY vs DOSA", 16, 22, 12, "#D4AF37", "bold");
+        vizNetwork(w, h, t, "PIXELS", "IDLY / DOSA");
+    },
+    classicalvision: (w, h, t) => {
+        text("GRAYSCALE → WEIGHTED STATISTICS → PCA → SVM", 16, 22, 12, "#D4AF37", "bold");
+        const l = 30, top = 68, cell = 22;
+        for (let r = 0; r < 12; r++) {
+            for (let c = 0; c < 20; c++) {
+                const v = 0.5 + 0.5 * Math.sin(r * 0.7 + c * 0.37 + t * 0.7);
+                ctx.fillStyle = "rgba(212,175,55," + (0.03 + 0.32 * v) + ")";
+                ctx.fillRect(l + c * cell, top + r * cell, cell - 1, cell - 1);
+            }
+        }
+        arrow(l + 460, top + 120, l + 550, top + 120);
+        rect(l + 570, top + 65, 110, 110, "#4a3a17");
+        text("FEATURES", l + 625, top + 107, 10, "#e2d7bd", "bold", "center");
+        text("PCA", l + 625, top + 130, 10, "#f0c94d", "bold", "center");
+        arrow(l + 700, top + 120, l + 810, top + 120);
+        rect(l + 830, top + 75, 110, 90, "#4a3a17");
+        text("SVM", l + 885, top + 128, 13, "#f0c94d", "bold", "center");
+    },
+    ellipse: (w, h, t) => {
+        text("ROTATED ELLIPTICAL ANOMALY FIELD", 16, 22, 12, "#D4AF37", "bold");
+        const cx = w * 0.5 + Math.sin(t * 0.4) * 35, cy = h * 0.53, ang = -0.25 + Math.sin(t * 0.35) * 0.2, a = w * 0.23, b = h * 0.14;
+        ctx.save(); ctx.translate(cx, cy); ctx.rotate(ang); ctx.strokeStyle = "#D4AF37"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(0, 0, a, b, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+        const q = rng(88);
+        for (let i = 0; i < 100; i++) {
+            let u = (q() - 0.5), v = (q() - 0.5);
+            const x = cx + u * a * 1.45, y = cy + v * b * 1.7;
+            const anomalous = (Math.abs(u) > 0.82 || Math.abs(v) > 0.78);
+            dot(x, y, anomalous ? 3.6 : 2, anomalous ? "#f0c94d" : "#6a6458");
+        }
+        dot(cx + Math.cos(t) * a * 0.82, cy + Math.sin(t * 1.4) * b * 0.82, 5, "#f0c94d");
+    },
+    pulickal: (w, h, t) => {
+        text("DUAL-FRONT BLOCK ELIMINATION / CENTRAL CORE", 16, 22, 12, "#D4AF37", "bold");
+        const y = h * 0.48, l = 60, r = w - 60, coreX = w * 0.5 - 75;
+        rect(l, y - 70, 140, 140); rect(coreX, y - 55, 150, 110); rect(r - 140, y - 70, 140, 140);
+        text("ALPHA", l + 70, y + 5, 11, "#f0c94d", "bold", "center");
+        text("PULICKAL CORE", w * 0.5, y + 5, 11, "#e2d9c6", "bold", "center");
+        text("BETA", r - 70, y + 5, 11, "#f0c94d", "bold", "center");
+        arrow(l + 140, y - 25, coreX, y - 25); arrow(r - 140, y + 25, coreX + 150, y + 25);
+        for (let i = 0; i < 7; i++) { const xx = l + 10 + i * 19; line(xx, y - 55, xx, y + 55, "#3d3218", 1); }
+        for (let i = 0; i < 7; i++) { const xx = r - 10 - i * 19; line(xx, y - 55, xx, y + 55, "#3d3218", 1); }
+        dot(w * 0.5 + Math.sin(t) * 45, w * 0.48 + Math.cos(t * 0.8) * 25, 5, "#f0c94d");
+    }
+};
+
+function vizNetwork(w, h, time, labelA, labelB) {
+    const cx = w * 0.5, cy = h * 0.48, left = cx - 210, right = cx + 210;
+    const layers = [3, 6, 4, 2], xs = [left, left + 145, left + 290, right];
+    layers.forEach((n, li) => {
+        for (let j = 0; j < n; j++) {
+            const y = cy + (j - (n - 1) / 2) * 58 + 18 * Math.sin(time * 1.2 + li + j);
+            dot(xs[li], y, 5 + 2 * Math.sin(time * 2 + li + j), "#D4AF37");
+        }
+    });
+    for (let li = 0; li < layers.length - 1; li++) {
+        for (let a = 0; a < layers[li]; a++) {
+            for (let b = 0; b < layers[li + 1]; b++) {
+                const y1 = cy + (a - (layers[li] - 1) / 2) * 58 + 18 * Math.sin(time * 1.2 + li + a);
+                const y2 = cy + (b - (layers[li + 1] - 1) / 2) * 58 + 18 * Math.sin(time * 1.2 + li + 1 + b);
+                line(xs[li], y1, xs[li + 1], y2, "#332a16", 0.65);
+            }
+        }
+    }
+    rect(left - 52, cy - 128, 105, 256, "#3c3014"); rect(right - 52, cy - 84, 105, 168, "#3c3014");
+    text("INPUT", left, cy - 145, 9, "#8a7322", "bold", "center");
+    text(labelB, right, cy - 99, 9, "#8a7322", "bold", "center");
+}
+
+function draw() {
+    const [w, h] = fit();
+    const p = projects[active];
+    const t = frame / 60;
+    
+    clear(w, h);
+    ctx.save();
+    ctx.beginPath(); ctx.rect(0, 0, w, h); ctx.clip();
+    
+    if (Visualizations[p.visual]) {
+        Visualizations[p.visual](w, h, t);
+    }
+    
+    ctx.restore();
+}
+
+// =========================================
+// APPLICATION LOGIC
+// =========================================
+function updateDOMText(el, content, isHTML = false) {
+    if (isHTML) {
+        if (el.innerHTML !== content) el.innerHTML = content;
+    } else {
+        if (el.textContent !== content) el.textContent = content;
+    }
+}
+
+function updateStaticReadouts(visualKey) {
+    let readout = "";
+    let help = "";
+    switch (visualKey) {
+        case "rl": readout = "<b>STATE:</b> 3×3 board · <b>UPDATE:</b> reward + next-state bootstrap · <b>POLICY:</b> evolving"; help = "STATE HIGHLIGHT"; break;
+        case "ecg": readout = "<b>PIPELINE:</b> signal → statistics → scaling → PCA → SVM"; help = "POINTER AMPLIFIES WAVE"; break;
+        case "audio": readout = "<b>REPRESENTATION:</b> MFCC statistical surface · <b>CLASSIFIER:</b> SVM"; help = "MOVE POINTER TO SHIFT SPECTRUM"; break;
+        case "vision": readout = "<b>LIVE MODEL:</b> feature flow is being traversed · <b>POINTER:</b> changes node phase"; help = "MOVE POINTER TO DISTORT FLOW"; break;
+        case "wine": readout = "<b>STACK:</b> Random Forest + XGBoost → Ridge · <b>VIEW:</b> feature influence"; help = "POINTER MODULATES WEIGHTS"; break;
+        case "sarcasm": readout = "<b>FEATURES:</b> sentence statistics from GloVe · <b>DECISION:</b> SVM boundary"; help = "POINTER MOVES QUERY VECTOR"; break;
+        case "context": readout = "<b>REASONING:</b> lexical cues + context + sentiment + semantic similarity"; help = "POINTER SHIFTS CONTEXT"; break;
+        case "acoustic": readout = "<b>PIPELINE:</b> audio → band-pass filter → Welch PSD → peak frequency"; help = "POINTER CHANGES PEAK"; break;
+        case "encryption": readout = "<b>ROUND TRIP:</b> transform → inverse_transform · <b>SECURITY:</b> not cryptographic"; help = "POINTER CHANGES SHIFT"; break;
+        case "spam": readout = "<b>TEXT:</b> n-grams → TF-IDF → linear separating hyperplane"; help = "POINTER PERTURBS TOKEN WEIGHTS"; break;
+        case "autoencoder": readout = "<b>ENCODER:</b> compressed temporal representation · <b>DECODER:</b> reconstructed signal · <b>SCORE:</b> window error"; help = "POINTER CREATES ARTIFICIAL SPIKE"; break;
+        case "circular": readout = "<b>EQUATION:</b> x=r cos θ, y=r sin θ · <b>LINK:</b> projection becomes sinusoidal"; help = "POINTER MODULATES ANGULAR SPEED"; break;
+        case "laundering": readout = "<b>STREAM:</b> transactions · <b>DETECTOR:</b> Isolation Forest · <b>VIEW:</b> suspicious points"; help = "POINTER SCANS TRANSACTIONS"; break;
+        case "nlp": readout = "<b>TASK:</b> 1-star vs 5-star · <b>MODEL:</b> TF-IDF + Multinomial Naive Bayes"; help = "POINTER MOVES REVIEW VECTOR"; break;
+        case "idly": readout = "<b>LIVE MODEL:</b> feature flow is being traversed · <b>POINTER:</b> changes node phase"; help = "MOVE POINTER TO DISTORT FLOW"; break;
+        case "classicalvision": readout = "<b>METHOD:</b> grayscale image → weighted moments → PCA → classical classifier"; help = "POINTER SHIFTS FEATURE MAP"; break;
+        case "ellipse": readout = "<b>SCORE:</b> rotated coordinates → normalized ellipse distance · <b>BOUNDARY:</b> dynamic"; help = "POINTER ROTATES AXIS"; break;
+        case "pulickal": readout = "<b>PHASES:</b> dual front elimination → core assembly → solve → back-substitution"; help = "POINTER MOVES CORE"; break;
+        default: break; // Dynamic ones handled in their draw functions
+    }
+    if (readout) updateDOMText(DOM.activeReadout, readout, true);
+    if (help) updateDOMText(DOM.vizHelp, help, false);
+}
+
+function update() {
+    const p = projects[active];
+    updateDOMText(DOM.activeCat, p.category);
+    updateDOMText(DOM.activeTitle, p.title);
+    updateDOMText(DOM.activeSummary, p.summary);
+    
+    const metaHTML = '<span class="badge gold">' + p.metric + '</span>' + p.tags.map(x => '<span class="badge">' + x + '</span>').join("");
+    updateDOMText(DOM.activeMeta, metaHTML, true);
+    
+    updateDOMText(DOM.codeTitle, p.id + " / FULL REUSABLE PYTHON · " + p.code.split("\n").length + " LINES");
+    updateDOMText(DOM.code, p.code.trim());
+    updateDOMText(DOM.adapt, "ADAPT IT → " + p.adapt);
+    
+    updateDOMText(DOM.structureTitle, p.structure_title);
+    const flowHTML = p.structure_steps.map((x, i) => (i ? '<div class="structure-arrow"></div>' : '') + '<div class="structure-step">' + x + '</div>').join("");
+    updateDOMText(DOM.structureFlow, flowHTML, true);
+    
+    updateDOMText(DOM.structureNote, "The display is a live conceptual rendering of the computation; the Python below is the complete reusable reference implementation represented on this page. Data paths are the only project-specific inputs. Everything needed to understand the logic is presented here.");
+    updateDOMText(DOM.vizLabel, p.structure_title + " / ACTIVE DISPLAY");
+    
+    document.title = "Pearl Bipin Codes — " + p.title;
+    updateStaticReadouts(p.visual);
+}
+
+function openProject(i) {
+    active = (i + projects.length) % projects.length;
+    frame = 0;
+    update();
+    buildActiveIndex();
+}
+
+function buildActiveIndex() {
+    document.querySelectorAll(".index-item").forEach((x, i) => {
+        x.style.color = (i === active) ? "#f0c94d" : "";
+    });
+}
+
+function build() {
+    projects.forEach((p, i) => {
+        // Index Item
+        const it = document.createElement("div");
+        it.className = "index-item";
+        it.setAttribute("tabindex", "0");
+        it.setAttribute("aria-label", `View project ${p.id}: ${p.title}`);
+        it.innerHTML = `<div class="num">${p.id}</div><div><div class="item-title">${p.title}</div><div class="item-cat">${p.category}</div></div>`;
+        it.addEventListener("click", () => openProject(i));
+        it.addEventListener("keydown", e => { if (e.key === 'Enter') openProject(i); });
+        DOM.index.appendChild(it);
+        
+        // Card Item
+        const c = document.createElement("article");
+        c.className = "card";
+        c.setAttribute("tabindex", "0");
+        c.setAttribute("aria-label", `View project ${p.id}: ${p.title}`);
+        c.style.animationDelay = (i * 25) + "ms";
+        c.innerHTML = `
+            <div class="top"><div class="id">WORK ${p.id}</div><div class="cat">${p.category}</div></div>
+            <h3>${p.title}</h3>
+            <p>${p.summary}</p>
+            <div class="meta">${p.tags.map(x => '<span class="badge">' + x + '</span>').join("")}</div>
+        `;
+        c.addEventListener("click", () => openProject(i));
+        c.addEventListener("keydown", e => { if (e.key === 'Enter') openProject(i); });
+        DOM.cards.appendChild(c);
+    });
+}
+
+// =========================================
+// EVENT LISTENERS
+// =========================================
+DOM.prev.addEventListener("click", () => openProject(active - 1));
+DOM.next.addEventListener("click", () => openProject(active + 1));
+DOM.random.addEventListener("click", () => openProject(Math.floor(Math.random() * projects.length)));
+DOM.pause.addEventListener("click", () => {
+    running = !running;
+    DOM.pause.textContent = running ? "PAUSE MOTION" : "RESUME MOTION";
+});
+
+DOM.copy.addEventListener("click", async () => {
+    try {
+        await navigator.clipboard.writeText(projects[active].code);
+        DOM.copy.textContent = "COPIED";
+        setTimeout(() => DOM.copy.textContent = "COPY PYTHON", 1100);
+    } catch (e) {
+        DOM.copy.textContent = "COPY FAILED";
+    }
+});
+
+DOM.viz.addEventListener("pointermove", e => {
+    const r = DOM.viz.getBoundingClientRect();
+    mouse.x = (e.clientX - r.left) / r.width;
+    mouse.y = (e.clientY - r.top) / r.height;
+});
+
+window.addEventListener("keydown", e => {
+    if (e.key === "ArrowRight") openProject(active + 1);
+    if (e.key === "ArrowLeft") openProject(active - 1);
+    if (e.key === " ") {
+        if (document.activeElement.tagName !== "BUTTON" && document.activeElement.tagName !== "DIV") {
+            e.preventDefault();
+            DOM.pause.click();
+        }
+    }
+});
+
+// =========================================
+// LOOPS & INIT
+// =========================================
+function loop() {
+    if (running) frame++;
+    draw();
+    updateDOMText(DOM.frameInfo, "FRAME " + String(frame).padStart(6, "0") + " · 60 FPS TARGET");
+    requestAnimationFrame(loop);
+}
+
+setInterval(() => {
+    updateDOMText(DOM.clock, new Date().toLocaleTimeString());
+}, 1000);
+
+build();
+update();
+buildActiveIndex();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
